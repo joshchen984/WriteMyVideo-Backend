@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gentium+Basic:ital@0;1&display=swap');
+
+*{
+  font-family: 'Open Sans', sans-serif;
+}
+nav{
+  background-color: gray;
+  height: 80px;
+  width: 100%;
+}
+html, body{
+  height: 100%;
+  margin:0px;
+}
+
+main{
+  background-image: url("/static/images/gradient.jpg");
+  background-size: cover;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.about{
+  padding: 20px 40px;
+  margin: 100px;
+  background-color: white;
+  font-size: 24px;
+  width: 50%;
+  text-align: center;
+}
+.about p{
+  font-family: 'Gentium Basic', serif;
+}
+label.logo{
+  color: white;
+  font-weight: 600;
+  font-size: 35px;
+  line-height: 80px;
+  padding: 0px 50px;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.form-container {
+  padding: 20px 80px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.form *{
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.form-item > * {
+  align-self: flex-start;
+}
+.form-title{
+  font-size:1.5em;
+  font-weight: 600;
+}
+.form-btn{
+  font-size: 1.1em;
+  cursor:pointer;
+  font-weight: 600;
+  padding: 10px;
+  margin: 10px;
+}
+
+.form-item{
+  display: flex;
+  flex-direction: column;
+
+}
+.form-check{
+  display: flex;
+  align-items: center;
+}
+
+.form-label{
+  font-weight:600;
+
+}
+.form-description{
+  font-size: 0.8em;
+}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{%block nav %}
+    <label class = "logo">Text2Video</label>
+{%endblock%}
+{%block main %}
+<video width = "960" height = "540" controls class = "full-video">
+    <!-- <source src = "{{ videopath }}" type = "video/mp4"> -->
+    <!-- <source src = "C:\Users\jenwa\Desktop\projects\Youtube-Automator\tmp\full_video.mp4" type = "video/mp4"> -->
+    <source src = "{{ url_for('static', filename='videos/full_video.mp4') }}" type = "video/mp4">
+
+        Your browser does not support the video tag
+</video>
+</main>
+{%endblock%}

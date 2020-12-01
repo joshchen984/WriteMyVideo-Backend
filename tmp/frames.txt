@@ -1,0 +1,17 @@
+file 'C:\Users\jenwa\Desktop\projects\Youtube-Automator\tmp\images\0\4.1006.jpg'
+duration 4.45
+file 'C:\Users\jenwa\Desktop\projects\Youtube-Automator\tmp\images\1\4.shakespeare-hero.jpg'
+duration 1.0399999999999991
+file 'C:\Users\jenwa\Desktop\projects\Youtube-Automator\tmp\images\2\5.italy-1200x815.jpg'
+duration 2.6900000000000004
+file 'C:\Users\jenwa\Desktop\projects\Youtube-Automator\tmp\images\3\4.994460cedbf2b2a5b39b8d4838dea99b.jpg'
+duration 5.190000000000001
+file 'C:\Users\jenwa\Desktop\projects\Youtube-Automator\tmp\images\4\2.rom16_3284.jpg'
+duration 0.6099999999999994
+file 'C:\Users\jenwa\Desktop\projects\Youtube-Automator\tmp\images\5\2.maxresdefault.jpg'
+duration 0.9999999999999982
+file 'C:\Users\jenwa\Desktop\projects\Youtube-Automator\tmp\images\6\5.romeo-and-juliet.jpg'
+duration 2.199999
+file 'C:\Users\jenwa\Desktop\projects\Youtube-Automator\tmp\images\7\5.9f4955eb-595d-4067-9849-3b5c98ec3517_1.558eac8c24e6eeac0e904ef9f3c6ea52.jpg'
+duration 0.6400019999999991
+file 'C:\Users\jenwa\Desktop\projects\Youtube-Automator\tmp\images\7\5.9f4955eb-595d-4067-9849-3b5c98ec3517_1.558eac8c24e6eeac0e904ef9f3c6ea52.jpg'
