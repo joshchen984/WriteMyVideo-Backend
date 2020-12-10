@@ -19,6 +19,8 @@ app.config['SECRET_KEY'] = config['SECRET_KEY']
 
 @app.route("/", methods=["GET"])
 def index():
+    """Home page
+    """
     return render_template("index.html")
 
 
@@ -36,6 +38,7 @@ def create():
             TRANSCRIPT_EXT = [".txt"]
             AUDIO_EXT = [".mp3"]
 
+            # checking for possible errors
             if transcript.filename == '':
                 # checking if transcript has been uploaded
                 flash("Missing Transcript", 'warning')
@@ -94,6 +97,14 @@ def create():
 
 
 def get_filename(length):
+    """Generates a random filename for a file
+
+    Args:
+        length: Length of generated filename
+
+    Returns:
+        string: filename without an extension
+    """
     chars = string.ascii_letters
     filename = ''.join([random.choice(chars) for _ in range(length)])
     return filename
@@ -101,6 +112,8 @@ def get_filename(length):
 
 @app.route("/show-video")
 def show():
+    """Displays video. Video to display is based on query string
+    """
     video_name = request.args.get("video_name")
     if video_name is None:
         return
@@ -109,6 +122,8 @@ def show():
 
 @app.route("/error")
 def error():
+    """Shows error page and displays error message
+    """
     error_msg = request.args.get("error_msg")
     return render_template("error.html", error_msg=error_msg)
 

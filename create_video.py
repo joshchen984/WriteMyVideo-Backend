@@ -10,15 +10,23 @@ from PIL import Image
 import concurrent.futures
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(filename="logs/logs.log", level=logging.DEBUG)
 
 
 class ImageCreator:
+    """
+    Class used to create frames file. Also used to download images.
+    """
     def __init__(self, images_dir, usage_rights):
         self.images_dir = images_dir
         self.usage_rights = usage_rights
 
     def download_images(self, image_words: list):
+        """Downloads images from google images
+
+        Args:
+            image_words: List of images to downloaded
+        """
         response = google_images_download.googleimagesdownload()
         results = []
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -32,9 +40,26 @@ class ImageCreator:
                 results.append(executor.submit(response.download, arguments))  # creating thread for image download
 
     def get_random_image(self, image_dir):
+        """Gets a random image from a directory
+
+        Args:
+            image_dir: Path to directory with images
+
+        Returns:
+            string: Path to chosen image
+        """
         return os.path.join(image_dir, choice(os.listdir(image_dir)))
 
     def convert_img(self, image_path, new_ext='.jpg'):
+        """Changes image to have another file extension
+
+        Args:
+            image_path: Path to image to change
+            new_ext: New file extension for image. e.g: .jpg
+
+        Returns:
+            string: Path to changed image
+        """
         pre, ext = os.path.splitext(image_path)
         im = Image.open(image_path)
         rgb_im = im.convert('RGB')
@@ -43,16 +68,40 @@ class ImageCreator:
         return pre + new_ext
 
     def resize_img(self, image_path, newsize=(1920, 1080)):
+        """Resizes Image
+
+        Args:
+            image_path: Path to image to change
+            newsize (tuple): Size to reshape image to
+        """
         im = Image.open(image_path)
         im = im.resize(newsize)
         im.save(image_path)
 
     def process_img(self, image_path, newsize=(1920, 1080), new_ext='.jpg'):
+        """Resizes and converts image to specified file extension
+
+        Args:
+            image_path: Path to image to change
+            newsize (tuple): Size to reshape image to
+            new_ext: New file extension for image. e.g: .jpg
+
+        Returns:
+            string: Path to changed image
+        """
         newpath = self.convert_img(image_path, new_ext)
         self.resize_img(newpath, newsize)
         return newpath
 
     def write_frames(self, words, prev_words, tmp_dir, image_words):
+        """Writes image paths and duration for how long images should appear for to a text file
+
+        Args:
+            words: Words with timestamps from gentle response
+            prev_words: Indexes of the words before the image_words
+            tmp_dir: Directory to save file
+            image_words: Image search terms. Only used for error message
+        """
         idx = 0
         prev_timestamp = 0
         timestamp = 0
@@ -109,6 +158,9 @@ class VideoCreator:
         self.output_file = output_file
 
     def create_video(self):
+        """Creates full video. Only function needed to call to create video
+
+        """
         # the image search terms and the text without the image search terms
         image_words, prev_words, text = self.parse_transcript(self.txtpath)
         parsed_txt_path = os.path.join(self.tmp_dir, "parsed.txt")
@@ -138,7 +190,7 @@ class VideoCreator:
         tts.save(self.audiopath)
 
     def parse_transcript(self, transcript_path: str):
-        """
+        """Separates image words and spoken words
         Args:
             transcript_path: Path to transcript
         Returns:
@@ -149,7 +201,7 @@ class VideoCreator:
         """
 
         def get_last_word(text):
-            """text = "hello there person" idx = 6 --> "hello"
+            """text = "hello there person" --> 2
             Args:
                 text (str): text to parse
 
@@ -165,7 +217,6 @@ class VideoCreator:
         prev_words = []
         image_word = ""
         is_image = False
-        idx = 0
         # The text without the image search terms
         parsed_text = ""
         # adding to text and image_words
@@ -174,6 +225,7 @@ class VideoCreator:
                 for char in line:
                     if is_image:
                         if char == ']':
+                            # if image word just ended
                             prev_word = get_last_word(parsed_text)
                             prev_words.append(prev_word)
                             image_words.append(image_word)
@@ -185,7 +237,6 @@ class VideoCreator:
                         is_image = True
                     else:
                         parsed_text += char
-                        idx += 1
 
         return image_words, prev_words, parsed_text
 
@@ -210,7 +261,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Turn text file into Youtube video with images and audio.")
     parser.add_argument("textpath", type=str, help="file path for the text file to convert")
     parser.add_argument("-a", "--audiopath", type=str,
-                        help="file path for the audio file to use. If ommited the program will use google text to speech to create the audio")
+                        help="file path for the audio file to use. If omitted the program will use google text to speech to create the audio")
     parser.add_argument("-d", '--download', type=int, default=1)
 
     args = parser.parse_args()
