@@ -1,2 +1,0 @@
-file 'C:\Users\jenwa\Desktop\projects\Text2Video\tmp\images\0\1.maxresdefault.jpg'
-duration 0.47
