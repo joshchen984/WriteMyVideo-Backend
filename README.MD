@@ -1,7 +1,11 @@
 # Text2Video
+<hr>
 Text2Video's purpose is to help people create videos quickly and easily by simply typing out the video’s script and a description of images to include in the video.
 
+![](images/demo.gif)
+
 ## Usage
+Just upload a script and an optional audio file of you saying the script<br>
 To start the server run this in the terminal
 ~~~
 docker start gentle

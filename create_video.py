@@ -8,9 +8,6 @@ from random import choice
 import subprocess
 from PIL import Image
 import concurrent.futures
-import logging
-
-logging.basicConfig(filename="logs/logs.log", level=logging.DEBUG)
 
 
 class ImageCreator:
@@ -33,13 +30,14 @@ class ImageCreator:
             for i, search in enumerate(image_words):
                 # making image directory i because there can be multiple searches that have the same name
                 arguments = {"keywords": search, "limit": 5, "print_urls": False, "output_directory": self.images_dir,
-                             "image_directory": str(i), 'format': 'jpg'}  # creating list of arguments
+                             "image_directory": str(i), 'format': 'jpg', "chromedriver": "chromedriver.exe"}  # creating list of arguments
 
                 if self.usage_rights != "any":
                     arguments['usage_rights'] = self.usage_rights
                 results.append(executor.submit(response.download, arguments))  # creating thread for image download
 
-    def get_random_image(self, image_dir):
+    @classmethod
+    def get_random_image(cls, image_dir):
         """Gets a random image from a directory
 
         Args:
@@ -50,7 +48,8 @@ class ImageCreator:
         """
         return os.path.join(image_dir, choice(os.listdir(image_dir)))
 
-    def convert_img(self, image_path, new_ext='.jpg'):
+    @classmethod
+    def convert_img(cls, image_path, new_ext='.jpg'):
         """Changes image to have another file extension
 
         Args:
@@ -67,7 +66,8 @@ class ImageCreator:
         rgb_im.save(pre + new_ext)
         return pre + new_ext
 
-    def resize_img(self, image_path, newsize=(1920, 1080)):
+    @classmethod
+    def resize_img(cls, image_path, newsize=(1920, 1080)):
         """Resizes Image
 
         Args:
@@ -78,7 +78,8 @@ class ImageCreator:
         im = im.resize(newsize)
         im.save(image_path)
 
-    def process_img(self, image_path, newsize=(1920, 1080), new_ext='.jpg'):
+    @classmethod
+    def process_img(cls, image_path, newsize=(1920, 1080), new_ext='.jpg'):
         """Resizes and converts image to specified file extension
 
         Args:
@@ -89,8 +90,8 @@ class ImageCreator:
         Returns:
             string: Path to changed image
         """
-        newpath = self.convert_img(image_path, new_ext)
-        self.resize_img(newpath, newsize)
+        newpath = cls.convert_img(image_path, new_ext)
+        cls.resize_img(newpath, newsize)
         return newpath
 
     def write_frames(self, words, prev_words, tmp_dir, image_words):
@@ -189,7 +190,8 @@ class VideoCreator:
         tts = gTTS(text)
         tts.save(self.audiopath)
 
-    def parse_transcript(self, transcript_path: str):
+    @classmethod
+    def parse_transcript(cls, transcript_path: str):
         """Separates image words and spoken words
         Args:
             transcript_path: Path to transcript
@@ -237,6 +239,10 @@ class VideoCreator:
                         is_image = True
                     else:
                         parsed_text += char
+        # checking if there's a hanging bracket
+        if is_image:
+            msg = "No closing bracket for image in transcript"
+            raise ValueError(msg)
 
         return image_words, prev_words, parsed_text
 

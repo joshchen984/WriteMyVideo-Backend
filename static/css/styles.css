@@ -12,20 +12,22 @@ nav{
 html, body{
   height: 100%;
   margin:0px;
+  background-image: url("/static/images/gradient.jpg");
+  background-size: cover;
 }
 
 main{
-  background-image: url("/static/images/gradient.jpg");
-  background-size: cover;
-  min-height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20px;
+}
+h1{
+  font-weight: 600;
 }
 
 .about{
   padding: 20px 40px;
-  margin: 100px;
   background-color: white;
   font-size: 24px;
   width: 50%;
@@ -50,17 +52,17 @@ label.logo{
 }
 
 .form-container {
-  padding: 20px 80px;
+  padding: 10px 80px;
   background-color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 18px;
+  width:80%;
 }
 
 .form *{
-  line-height: 1.5;
   box-sizing: border-box;
 }
 
@@ -69,12 +71,9 @@ label.logo{
 }
 .form-title{
   font-size:1.5em;
-  font-weight: 600;
+  font-weight: 400;
 }
 .form-btn{
-  font-size: 1.1em;
-  cursor:pointer;
-  font-weight: 600;
   padding: 10px;
   margin: 10px;
 }
@@ -95,4 +94,7 @@ label.logo{
 }
 .form-description{
   font-size: 0.8em;
+}
+.flash{
+  width:100%;
 }
