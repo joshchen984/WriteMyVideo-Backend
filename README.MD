@@ -21,7 +21,11 @@ git clone https://github.com/joshchen984/Text2Video.git
 cd Text2Video
 ./install.sh
 ~~~
-
+Create a config.yaml file in the root folder
+Paste this in the file
+~~~
+SECRET_KEY: SOME_KEY
+~~~
 ## Requirements
 Python 3.9.0
 
