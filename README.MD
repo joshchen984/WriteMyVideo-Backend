@@ -1,4 +1,5 @@
 # Text2Video
+## (Installation Instructions are Confusing. Working on Putting this on the Internet)
 <hr>
 Text2Video's purpose is to help people create videos quickly and easily by simply typing out the video’s script and a description of images to include in the video.
 
@@ -25,7 +26,10 @@ git clone https://github.com/joshchen984/Text2Video.git
 cd Text2Video
 ./install.sh
 ~~~
+Must install [ffmpeg](https://www.ffmpeg.org/download.html#build-windows) and add it to PATH
+
 Create a config.yaml file in the root folder
+
 Paste this in the file
 ~~~
 SECRET_KEY: SOME_KEY
