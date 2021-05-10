@@ -8,7 +8,8 @@ from random import choice
 import subprocess
 from PIL import Image
 import concurrent.futures
-
+import gentle
+import multiprocessing
 
 class ImageCreator:
     """
@@ -181,10 +182,10 @@ class VideoCreator:
         # bring images together
         command = f"ffmpeg -safe 0 -y -f concat -i {os.path.join(self.tmp_dir, 'frames.txt')} {os.path.join(self.tmp_dir, 'video.mp4')}"
         ffmpeg_path = "C:/Tools/ffmpeg/bin"
-        subprocess.run(command, shell=True, env={'PATH': ffmpeg_path})
+        subprocess.run(command, shell=True)
         # add audio
         command = f"ffmpeg -i {os.path.join(self.tmp_dir, 'video.mp4')} -i {self.audiopath} -c:v copy -c:a aac -y {self.output_file}"
-        subprocess.run(command, shell=True, env={'PATH': ffmpeg_path})
+        subprocess.run(command, shell=True)
 
     def create_audio(self, text):
         tts = gTTS(text)
@@ -247,7 +248,7 @@ class VideoCreator:
         return image_words, prev_words, parsed_text
 
     def get_gentle_response(self, parsed_txt_path):
-        """Returns response from gentle server
+        """Returns response from gentle
     
         Args:
             parsed_txt_path (str): parsed txt path
@@ -255,11 +256,19 @@ class VideoCreator:
         Returns:
             list: aligned words
         """
-        files = {"transcript": open(parsed_txt_path, 'rb'), 'audio': open(self.audiopath, 'rb')}
-        r = requests.post("http://localhost:8765/transcriptions?async=false", files=files)
-        gentle_json = r.json()
-        words = gentle_json['words']
-        return words
+
+        with open(parsed_txt_path, encoding="utf-8") as fh:
+            transcript = fh.read()
+
+        resources = gentle.Resources()
+        # words for gentle to ignore when aligning
+        disfluencies = set(['uh', 'um'])
+        with gentle.resampled(self.audiopath) as wavfile:
+            aligner = gentle.ForcedAligner(resources, transcript, nthreads=multiprocessing.cpu_count(), disfluency=False, conservative=False, disfluencies=disfluencies)
+            result = aligner.transcribe(wavfile)
+
+
+        return [word.as_dict(without="duration") for word in result.words]
 
 
 if __name__ == '__main__':
