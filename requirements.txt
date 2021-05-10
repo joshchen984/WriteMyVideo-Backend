@@ -1,9 +1,17 @@
+attrs==21.2.0
+Automat==20.2.0
 certifi==2020.11.8
 chardet==3.0.4
 click==7.1.2
+constantly==15.1.0
 Flask==1.1.2
+-e git+https://github.com/lowerquality/gentle.git@2148efccf065aaf86c7c99d89fdbea83d834089d#egg=gentle
+google-images-download==2.8.0
 gTTS==2.2.1
+gunicorn==20.1.0
+hyperlink==21.0.0
 idna==2.10
+incremental==21.3.0
 itsdangerous==1.1.0
 Jinja2==2.11.2
 MarkupSafe==1.1.1
@@ -12,5 +20,7 @@ PyYAML==5.3.1
 requests==2.25.0
 selenium==3.141.0
 six==1.15.0
+Twisted==21.2.0
 urllib3==1.26.2
 Werkzeug==1.0.1
+zope.interface==5.4.0
