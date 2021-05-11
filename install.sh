@@ -4,3 +4,4 @@ docker stop gentle
 mkdir logs
 touch logs/app.log
 echo "SECRET_KEY: SOME_KEY" > config.yaml
+mkdir static/videos
