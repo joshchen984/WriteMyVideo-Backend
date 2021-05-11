@@ -8,8 +8,6 @@ from random import choice
 import subprocess
 from PIL import Image
 import concurrent.futures
-import gentle
-import multiprocessing
 
 class ImageCreator:
     """
@@ -256,20 +254,12 @@ class VideoCreator:
         Returns:
             list: aligned words
         """
-
-        with open(parsed_txt_path, encoding="utf-8") as fh:
-            transcript = fh.read()
-
-        resources = gentle.Resources()
-        # words for gentle to ignore when aligning
-        disfluencies = set(['uh', 'um'])
-        with gentle.resampled(self.audiopath) as wavfile:
-            aligner = gentle.ForcedAligner(resources, transcript, nthreads=multiprocessing.cpu_count(), disfluency=False, conservative=False, disfluencies=disfluencies)
-            result = aligner.transcribe(wavfile)
-
-
-        return [word.as_dict(without="duration") for word in result.words]
-
+        files = {"transcript": open(parsed_txt_path, 'rb'), 'audio': open(self.audiopath, 'rb')}
+        r = requests.post("http://localhost:8765/transcriptions?async=false", files=files)
+        print("Done")
+        gentle_json = r.json()
+        words = gentle_json['words']
+        return words
 
 if __name__ == '__main__':
     # Creating program arguments
