@@ -29,7 +29,8 @@ class ImageCreator:
             for i, search in enumerate(image_words):
                 # making image directory i because there can be multiple searches that have the same name
                 arguments = {"keywords": search, "limit": 5, "print_urls": False, "output_directory": self.images_dir,
-                             "image_directory": str(i), 'format': 'jpg', "chromedriver": "chromedriver.exe"}  # creating list of arguments
+                             "image_directory": str(i), 'format': 'jpg', "chromedriver": "chromedriver.exe",
+                             'silent_mode': True}  # creating list of arguments
 
                 if self.usage_rights != "any":
                     arguments['usage_rights'] = self.usage_rights
