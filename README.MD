@@ -28,14 +28,8 @@ cd Text2Video
 ~~~
 Must install [ffmpeg](https://www.ffmpeg.org/download.html#build-windows) and add it to PATH
 
-Create a config.yaml file in the root folder
-
-Paste this in the file
-~~~
-SECRET_KEY: SOME_KEY
-~~~
 ## Requirements
-Python 3.9.0
+Python 3.6 or up
 
 Docker
 [How to install](https://www.youtube.com/watch?v=5nX8U8Fz5S0)
