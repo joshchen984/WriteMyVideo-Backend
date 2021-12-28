@@ -9,32 +9,20 @@ Text2Video's purpose is to help people create videos quickly and easily by simpl
 Just upload a script and an optional audio file of you saying the script<br>
 To start the server run this in the terminal
 
-```
-docker start gentle
-python app.py
-```
-
-To stop the server open the same terminal and press CTRL-C. After that run
-
-```
-docker stop gentle
-```
+`docker-compose up -d`
 
 For instructions on how to use Text2Video check out this [tutorial](https://www.youtube.com/watch?v=o5VlCaXgN6w).
 
 ## Installation
 
-For detailed instructions on how to install Text2Video check out this [tutorial](https://youtu.be/KutuoBaM30w)
-
-This has only been tested on Windows 10.
+Run these commands
 
 ```
 git clone https://github.com/joshchen984/Text2Video.git
 cd Text2Video
-./install.sh
+mkdir app/static/videos
+mkdir tmp
 ```
-
-Must install [ffmpeg](https://www.ffmpeg.org/download.html#build-windows) and add it to PATH
 
 ## Requirements
 

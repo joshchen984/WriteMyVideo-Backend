@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  gentle:
+    image: lowerquality/gentle
+    ports:
+      - 8765:8765
+  app:
+    build:
+      context: .
+    ports:
+      - 3001:80
+    volumes:
+      - .:/app

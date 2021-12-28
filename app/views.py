@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, url_for, request, redirect, flash, abort
-from create_video import VideoCreator
+from app.create_video import VideoCreator
 import os
 from app.utils import check_for_err, get_filename, create_tmp
 import shutil
@@ -40,11 +40,11 @@ def create():
                 audio.save(audiopath)
 
             video_name = get_filename(10)
-            while os.path.isfile(f"static/videos/{video_name}.mp4"):
+            while os.path.isfile(f"app/static/videos/{video_name}.mp4"):
                 video_name = get_filename(10)
 
             creator = VideoCreator(images_dir, tmp_dir, use_audio, audiopath, textpath, usage_rights,
-                                   f"static/videos/{video_name}.mp4")
+                                   f"app/static/videos/{video_name}.mp4")
             try:
                 creator.create_video()
             except ValueError as e:
@@ -63,7 +63,7 @@ def show():
     """
     video_name = request.args.get("video_name")
     # if query string is invalid
-    vid_location = os.path.join("static", "videos", video_name + '.mp4')
+    vid_location = os.path.join("app", "static", "videos", video_name + '.mp4')
     if video_name is None or not os.path.isfile(vid_location):
         abort(404)
     return render_template("show-video.html", video_name=video_name)

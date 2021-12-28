@@ -3,6 +3,7 @@ FROM tiangolo/uwsgi-nginx:python3.8
 # Install requirements
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
+RUN apt update && apt install -y ffmpeg
 
 # URL under which static (not modified by Python) files will be requested
 # They will be served by Nginx directly, without being handled by uWSGI

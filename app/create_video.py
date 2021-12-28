@@ -9,10 +9,12 @@ import subprocess
 from PIL import Image
 import concurrent.futures
 
+
 class ImageCreator:
     """
     Class used to create frames file. Also used to download images.
     """
+
     def __init__(self, images_dir, usage_rights):
         self.images_dir = images_dir
         self.usage_rights = usage_rights
@@ -34,7 +36,8 @@ class ImageCreator:
 
                 if self.usage_rights != "any":
                     arguments['usage_rights'] = self.usage_rights
-                results.append(executor.submit(response.download, arguments))  # creating thread for image download
+                # creating thread for image download
+                results.append(executor.submit(response.download, arguments))
 
     @classmethod
     def get_random_image(cls, image_dir):
@@ -119,10 +122,12 @@ class ImageCreator:
                     if i == prev_words[idx + 1]:
                         # choosing random image from the 5 images of search
                         try:
-                            img = self.get_random_image(os.path.join(self.images_dir, str(idx)))
+                            img = self.get_random_image(
+                                os.path.join(self.images_dir, str(idx)))
                         except IndexError:
                             # if the downloader didn't download any images for certain image
-                            raise ValueError(f"No images downloaded for '{image_words[idx]}'")
+                            raise ValueError(
+                                f"No images downloaded for '{image_words[idx]}'")
 
                         newpath = self.process_img(img)
                         f.write(f"file '{newpath}'\n")
@@ -136,10 +141,12 @@ class ImageCreator:
             # writing last entry to txt file
             timestamp = words[-1]['end']
             try:
-                img = self.get_random_image(os.path.join(self.images_dir, str(idx)))
+                img = self.get_random_image(
+                    os.path.join(self.images_dir, str(idx)))
             except IndexError:
                 # if the downloader didn't download any images for certain image
-                raise ValueError(f"No images downloaded for '{image_words[idx]}'")
+                raise ValueError(
+                    f"No images downloaded for '{image_words[idx]}'")
 
             newpath = self.process_img(img)
             f.write(f"file '{newpath}'\n")
@@ -176,11 +183,11 @@ class VideoCreator:
 
         words = self.get_gentle_response(parsed_txt_path)
 
-        self.img_creator.write_frames(words, prev_words, self.tmp_dir, image_words)
+        self.img_creator.write_frames(
+            words, prev_words, self.tmp_dir, image_words)
 
         # bring images together
         command = f"ffmpeg -safe 0 -y -f concat -i {os.path.join(self.tmp_dir, 'frames.txt')} {os.path.join(self.tmp_dir, 'video.mp4')}"
-        ffmpeg_path = "C:/Tools/ffmpeg/bin"
         subprocess.run(command, shell=True)
         # add audio
         command = f"ffmpeg -i {os.path.join(self.tmp_dir, 'video.mp4')} -i {self.audiopath} -c:v copy -c:a aac -y {self.output_file}"
@@ -248,24 +255,29 @@ class VideoCreator:
 
     def get_gentle_response(self, parsed_txt_path):
         """Returns response from gentle
-    
+
         Args:
             parsed_txt_path (str): parsed txt path
 
         Returns:
             list: aligned words
         """
-        files = {"transcript": open(parsed_txt_path, 'rb'), 'audio': open(self.audiopath, 'rb')}
-        r = requests.post("http://localhost:8765/transcriptions?async=false", files=files)
+        files = {"transcript": open(
+            parsed_txt_path, 'rb'), 'audio': open(self.audiopath, 'rb')}
+        r = requests.post(
+            "http://gentle:8765/transcriptions?async=false", files=files)
         print("Done")
         gentle_json = r.json()
         words = gentle_json['words']
         return words
 
+
 if __name__ == '__main__':
     # Creating program arguments
-    parser = argparse.ArgumentParser(description="Turn text file into Youtube video with images and audio.")
-    parser.add_argument("textpath", type=str, help="file path for the text file to convert")
+    parser = argparse.ArgumentParser(
+        description="Turn text file into Youtube video with images and audio.")
+    parser.add_argument("textpath", type=str,
+                        help="file path for the text file to convert")
     parser.add_argument("-a", "--audiopath", type=str,
                         help="file path for the audio file to use. If omitted the program will use google text to speech to create the audio")
     parser.add_argument("-d", '--download', type=int, default=1)
