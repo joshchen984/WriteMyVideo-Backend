@@ -264,9 +264,9 @@ class VideoCreator:
         """
         files = {"transcript": open(
             parsed_txt_path, 'rb'), 'audio': open(self.audiopath, 'rb')}
+        # TODO: make env variables for requests
         r = requests.post(
             "http://gentle:8765/transcriptions?async=false", files=files)
-        print("Done")
         gentle_json = r.json()
         words = gentle_json['words']
         return words

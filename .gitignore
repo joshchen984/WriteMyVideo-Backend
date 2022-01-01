@@ -6,3 +6,4 @@ config.yaml
 logs
 app/static/videos/
 tmp/
+.env.production

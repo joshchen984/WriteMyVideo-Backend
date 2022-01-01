@@ -9,7 +9,7 @@ Text2Video's purpose is to help people create videos quickly and easily by simpl
 Just upload a script and an optional audio file of you saying the script<br>
 To start the server run this in the terminal
 
-`docker-compose up -d`
+`docker-compose --env-file ./.env.dev up -d`
 
 Go to `localhost:3001` to view the website
 
