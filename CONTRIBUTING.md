@@ -20,3 +20,15 @@ To report a bug create a Github issue.
 - Describe the exact steps to reproduce the problem
 - Provide what happened after you followed the steps and what was wrong with that behavior
 - Explain what behavior you were expecting to see and why
+
+## Production
+
+Text2Video is deployed on DigitalOcean
+
+- Create a `.env.production` file in the root directory containing this:
+
+```
+WEBSITE_PORT=80
+```
+
+Run `docker-compose --env-file .env.production up -d`
