@@ -1,42 +1,75 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Gentium+Basic:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
 
-*{
-  font-family: 'Open Sans', sans-serif;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
-nav{
-  background-color: gray;
-  height: 80px;
+* {
+  font-family: 'Prompt', sans-serif;
+}
+.nav {
+  background-color: white;
+  padding: 0.5rem 2rem;
   width: 100%;
+  border-bottom: 2px solid #2eaa44;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-html, body{
+.nav .menu-items {
+  list-style: none;
+  text-align: right;
+}
+.nav .menu-items li {
+  display: inline;
+  padding-left: 1rem;
+}
+.nav .menu-items li a {
+  text-decoration: none;
+  color: #2eaa44;
+  font-size: 1.25rem;
+}
+.nav .logo {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 2rem;
+  margin: 0;
+  color: #2eaa44;
+}
+
+html,
+body {
   height: 100%;
-  margin:0px;
-  background-image: url("/static/images/gradient.jpg");
+  margin: 0px;
+  padding: 0;
+  background-image: url('/static/images/gradient.jpg');
   background-size: cover;
 }
 
-main{
+main {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
 }
-h1{
+h1 {
   font-weight: 600;
 }
 
-.about{
+.about {
   padding: 20px 40px;
   background-color: white;
-  font-size: 24px;
   width: 50%;
+  font-size: 1.25rem;
   text-align: center;
+  margin: auto;
+  margin-bottom: 1.5rem;
 }
-.about p{
-  font-family: 'Gentium Basic', serif;
-}
-label.logo{
+
+label.logo {
   color: white;
   font-weight: 600;
   font-size: 35px;
@@ -59,42 +92,41 @@ label.logo{
   align-items: center;
   justify-content: center;
   font-size: 18px;
-  width:80%;
+  width: 80%;
+  margin: auto;
 }
 
-.form *{
+.form * {
   box-sizing: border-box;
 }
 
 .form-item > * {
   align-self: flex-start;
 }
-.form-title{
-  font-size:1.5em;
+.form-title {
+  font-size: 1.5em;
   font-weight: 400;
 }
-.form-btn{
+.form-btn {
   padding: 10px;
   margin: 10px;
 }
 
-.form-item{
+.form-item {
   display: flex;
   flex-direction: column;
-
 }
-.form-check{
+.form-check {
   display: flex;
   align-items: center;
 }
 
-.form-label{
-  font-weight:600;
-
+.form-label {
+  font-weight: 600;
 }
-.form-description{
+.form-description {
   font-size: 0.8em;
 }
-.flash{
-  width:100%;
+.flash {
+  width: 100%;
 }
