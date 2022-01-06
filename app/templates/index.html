@@ -1,32 +1,25 @@
 {% extends "base.html" %} {% block head %}
-<title>Text2Video</title>
-{%endblock%} {% block nav %}
-    <p class="logo">Text2Video</label>
-    <ul class="menu-items">
-    <li><a href='/tutorial'>Tutorial</a></li>
-    </ul>
+<title>Create Video | Text2Video</title>
 {%endblock%} {%block main %}
 <div class="about">
   <h1>Text2Video</h1>
   <p>
-    Create videos quickly and easily without the hassle of recording your
-    voice, finding images, and editing the final product. Just upload your
-    script and Text2Video will do it all for you.
+    Create videos quickly and easily without the hassle of recording your voice,
+    finding images, and editing the final product. Just upload your script and
+    Text2Video will do it all for you.
   </p>
 </div>
 
 <div class="form-container">
   <form
     method="POST"
-    action="/create-video"
+    action="/upload-images"
     enctype="multipart/form-data"
     class="form"
   >
     <div class="form-title">Create Your Video</div>
     <div class="form-item">
-      <label for="transcript" class="form-label"
-        >Upload Script (.txt)</label
-      >
+      <label for="transcript" class="form-label">Upload Script (.txt)</label>
       <input type="file" name="transcript" id="transcript" />
     </div>
     <div class="form-description">
@@ -44,9 +37,7 @@
     </div>
     <div class="audio_file" style="display: none">
       <div class="form-item">
-        <label for="audio" class="form-label"
-          >Upload Audio File (mp3)</label
-        >
+        <label for="audio" class="form-label">Upload Audio File (mp3)</label>
         <input type="file" name="audio" id="audio" />
       </div>
     </div>

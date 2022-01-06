@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous"> -->
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/styles.css') }}"
@@ -12,7 +11,12 @@
     {% block head %}{% endblock %}
   </head>
   <body>
-    <nav class="nav">{% block nav %}{%endblock%}</nav>
+    <nav class="nav">
+      <a href="/" class="logo">Text2Video</a>
+      <ul class="menu-items">
+        <li><a href="/tutorial">Tutorial</a></li>
+      </ul>
+    </nav>
     <div class="flash">
       {% with messages = get_flashed_messages(with_categories = true) %} {% if
       messages %} {%for category, message in messages %}
@@ -33,7 +37,7 @@
       {%endfor%} {%endif%} {%endwith%}
     </div>
     <main>
-      <div class="container">{% block main %}{%endblock%}</div>
+      {% block main %}{%endblock%}
     </main>
     {%block scripts%}{%endblock%}
   </body>

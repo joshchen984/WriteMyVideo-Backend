@@ -1,10 +1,9 @@
 from app import app
 from flask import render_template, url_for, request, redirect, flash, abort
-from app.create_video import VideoCreator
 import os
-from app.utils import check_for_err, get_filename, create_tmp
-import shutil
-
+from app.utils import check_for_err, create_tmp, create_video
+from werkzeug.datastructures import FileStorage
+from io import TextIOWrapper 
 
 @app.route("/", methods=["GET"])
 def index():
@@ -13,14 +12,15 @@ def index():
     return render_template("index.html")
 
 
-@app.route('/create-video', methods=["POST"])
-def create():
+@app.route('/upload-images', methods=["POST"])
+def upload():
     if request.method == 'POST':
         if request.files:
             POST = request.form
             use_audio = POST.get('use_audio')
             usage_rights = POST.get("usage_rights")
-            transcript = request.files['transcript']
+            use_images = POST.get('use_images')
+            transcript: FileStorage = request.files['transcript']
             audio = request.files['audio']
 
             is_error, error_msg, category = check_for_err(
@@ -39,22 +39,65 @@ def create():
             if use_audio:
                 audio.save(audiopath)
 
-            video_name = get_filename(10)
-            while os.path.isfile(f"app/static/videos/{video_name}.mp4"):
-                video_name = get_filename(10)
+            if use_images:
+                word = ""
+                is_image = False
+                words = []
+                num_words = 0
+                with open(textpath, 'r') as f:
+                    for line in f:
+                        for char in line:
+                            if is_image:
+                                word+=char
+                                if char == ']':
+                                    # if image word just ended
+                                    words.append([word, True, num_words])
+                                    num_words+=1
+                                    word = ""
+                                    is_image = False
+                            elif char == '[':
+                                is_image = True
+                                if word != '':
+                                    words.append([word, False, num_words])
+                                    num_words+=1
+                                word=char
+                            else:
+                                if char == ' ':
+                                    if word != '':
+                                        words.append([word, False, num_words])
+                                        num_words+=1
+                                        word = ''
+                                else:
+                                    word += char
+                # checking if there's a hanging bracket
+                if is_image:
+                    msg = "No closing bracket for image in transcript"
+                    raise ValueError(msg)
+                return render_template('upload-images.html', transcript=words)
+            else:
+                video_name = create_video(images_dir, tmp_dir, use_audio,
+                                          audiopath, textpath, usage_rights)
+                if not isinstance(video_name, str):
+                    return video_name
+                return redirect(url_for('show', video_name=video_name))
 
-            creator = VideoCreator(images_dir, tmp_dir, use_audio, audiopath, textpath, usage_rights,
-                                   f"app/static/videos/{video_name}.mp4")
-            try:
-                creator.create_video()
-            except ValueError as e:
-                flash(str(e), "warning")
-                return redirect(url_for("index"))
-            finally:
-                # deleting tmp directory after image has been created
-                shutil.rmtree(tmp_dir)
 
-            return redirect(url_for('show', video_name=video_name))
+@app.route('/create-video', methods=["POST"])
+def create():
+    if request.method == 'POST':
+        POST = request.form
+        use_audio = POST.get('use_audio')
+        usage_rights = POST.get("usage_rights")
+        tmp_dir = POST.get('tmp_dir')
+        images_dir = POST.get('images_dir')
+        textpath = POST.get('textpath')
+        audiopath = POST.get('audiopath')
+
+        video_name = create_video(images_dir, tmp_dir, use_audio,
+                                  audiopath, textpath, usage_rights)
+        if not isinstance(video_name, str):
+            return video_name
+        return redirect(url_for('show', video_name=video_name))
 
 
 @app.route("/show-video")
@@ -67,3 +110,8 @@ def show():
     if video_name is None or not os.path.isfile(vid_location):
         abort(404)
     return render_template("show-video.html", video_name=video_name)
+
+
+@app.route('/tutorial')
+def tutorial():
+    return render_template('tutorial.html')

@@ -38,6 +38,7 @@
   font-size: 2rem;
   margin: 0;
   color: #2eaa44;
+  text-decoration: none;
 }
 
 html,
@@ -129,4 +130,9 @@ label.logo {
 }
 .flash {
   width: 100%;
+}
+.main-container {
+  max-width: 757px;
+  margin:auto;
+  width:100%;
 }

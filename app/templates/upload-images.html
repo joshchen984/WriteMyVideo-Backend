@@ -1,0 +1,28 @@
+{% extends "base.html" %} {% block head %}
+<title>Upload Images | Text2Video</title>
+<link
+rel="stylesheet"
+href="{{ url_for('static', filename='css/upload-images.css') }}"
+type="text/css"
+/>
+{%endblock%} {%block main %} 
+<div class="main-container">
+  <div class="upload-header">
+    <h1>Upload Images</h1>
+    <p>Your script is shown below. Click the blue image descriptions to upload an image that will appear at that location.</p>
+  </div>
+  <div class="script">
+    <form>
+      {% for word in transcript %}
+        {% if word[1] %}
+          <input type="file" id="word-{{word[2]}}" hidden/>
+          <label for="word-{{word[2]}}" class="image-upload-label">{{word[0]}}</label>
+        {% else %}
+          {{word[0]}}
+        {% endif %}
+      {% endfor %}
+    </form>
+  </div>
+</div>
+
+{%endblock%}

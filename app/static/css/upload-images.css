@@ -1,0 +1,14 @@
+.upload-header {
+  background-color: white;
+  padding:0 2rem
+}
+.script {
+  background-color: white;
+  padding:2rem;
+}
+.image-upload-label {
+  color:blue;
+}
+.image-upload-label:hover {
+  text-decoration: underline;
+}
