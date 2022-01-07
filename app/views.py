@@ -3,7 +3,8 @@ from flask import render_template, url_for, request, redirect, flash, abort
 import os
 from app.utils import check_for_err, create_tmp, create_video
 from werkzeug.datastructures import FileStorage
-from io import TextIOWrapper 
+from io import TextIOWrapper
+
 
 @app.route("/", methods=["GET"])
 def index():
@@ -43,29 +44,27 @@ def upload():
                 word = ""
                 is_image = False
                 words = []
-                num_words = 0
+                num_images = 0
                 with open(textpath, 'r') as f:
                     for line in f:
                         for char in line:
                             if is_image:
-                                word+=char
+                                word += char
                                 if char == ']':
                                     # if image word just ended
-                                    words.append([word, True, num_words])
-                                    num_words+=1
+                                    words.append([word, True, num_images])
+                                    num_images += 1
                                     word = ""
                                     is_image = False
                             elif char == '[':
                                 is_image = True
                                 if word != '':
-                                    words.append([word, False, num_words])
-                                    num_words+=1
-                                word=char
+                                    words.append([word, False])
+                                word = char
                             else:
                                 if char == ' ':
                                     if word != '':
-                                        words.append([word, False, num_words])
-                                        num_words+=1
+                                        words.append([word, False])
                                         word = ''
                                 else:
                                     word += char
@@ -73,7 +72,9 @@ def upload():
                 if is_image:
                     msg = "No closing bracket for image in transcript"
                     raise ValueError(msg)
-                return render_template('upload-images.html', transcript=words)
+                return render_template('upload-images.html', transcript=words, use_audio=use_audio,
+                usage_rights=usage_rights, tmp_dir=tmp_dir, images_dir=images_dir,
+                textpath=textpath,audiopath=audiopath)
             else:
                 video_name = create_video(images_dir, tmp_dir, use_audio,
                                           audiopath, textpath, usage_rights)
@@ -85,19 +86,21 @@ def upload():
 @app.route('/create-video', methods=["POST"])
 def create():
     if request.method == 'POST':
-        POST = request.form
-        use_audio = POST.get('use_audio')
-        usage_rights = POST.get("usage_rights")
-        tmp_dir = POST.get('tmp_dir')
-        images_dir = POST.get('images_dir')
-        textpath = POST.get('textpath')
-        audiopath = POST.get('audiopath')
-
-        video_name = create_video(images_dir, tmp_dir, use_audio,
-                                  audiopath, textpath, usage_rights)
-        if not isinstance(video_name, str):
-            return video_name
-        return redirect(url_for('show', video_name=video_name))
+        if request.files:
+            POST = request.form
+            use_audio = POST.get('use_audio') != "None"
+            usage_rights = POST.get("usage_rights")
+            tmp_dir = POST.get('tmp_dir')
+            images_dir = POST.get('images_dir')
+            textpath = POST.get('textpath')
+            audiopath = POST.get('audiopath')
+            video_name = create_video(images_dir, tmp_dir, use_audio,
+                                      audiopath, textpath, usage_rights, True, request.files)
+            if not isinstance(video_name, str):
+                return video_name
+            return redirect(url_for('show', video_name=video_name))
+    print("No files or method not post")
+    abort(400)
 
 
 @app.route("/show-video")

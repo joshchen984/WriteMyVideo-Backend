@@ -12,3 +12,6 @@
 .image-upload-label:hover {
   text-decoration: underline;
 }
+.upload-image-btn {
+  display:block;
+}

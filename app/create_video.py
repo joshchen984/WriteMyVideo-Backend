@@ -8,6 +8,7 @@ from random import choice
 import subprocess
 from PIL import Image
 import concurrent.futures
+from werkzeug.utils import secure_filename
 
 
 class ImageCreator:
@@ -15,9 +16,12 @@ class ImageCreator:
     Class used to create frames file. Also used to download images.
     """
 
-    def __init__(self, images_dir, usage_rights):
+    def __init__(self, images_dir, usage_rights, use_images=False, images=None):
         self.images_dir = images_dir
         self.usage_rights = usage_rights
+        self.use_images = use_images
+        if use_images:
+            self.images = images
 
     def download_images(self, image_words: list):
         """Downloads images from google images
@@ -25,19 +29,27 @@ class ImageCreator:
         Args:
             image_words: List of images to downloaded
         """
-        response = google_images_download.googleimagesdownload()
-        results = []
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            for i, search in enumerate(image_words):
-                # making image directory i because there can be multiple searches that have the same name
-                arguments = {"keywords": search, "limit": 5, "print_urls": False, "output_directory": self.images_dir,
-                             "image_directory": str(i), 'format': 'jpg', "chromedriver": "chromedriver.exe",
-                             'silent_mode': True}  # creating list of arguments
+        if not self.use_images:
+            response = google_images_download.googleimagesdownload()
+            results = []
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                for i, search in enumerate(image_words):
+                    # making image directory i because there can be multiple searches that have the same name
+                    arguments = {"keywords": search, "limit": 5, "print_urls": False, "output_directory": self.images_dir,
+                                 "image_directory": str(i), 'format': 'jpg', "chromedriver": "chromedriver.exe",
+                                 'silent_mode': True}  # creating list of arguments
 
-                if self.usage_rights != "any":
-                    arguments['usage_rights'] = self.usage_rights
-                # creating thread for image download
-                results.append(executor.submit(response.download, arguments))
+                    if self.usage_rights != "any":
+                        arguments['usage_rights'] = self.usage_rights
+                    # creating thread for image download
+                    results.append(executor.submit(
+                        response.download, arguments))
+        else:
+            num_images = len(image_words)
+            for i in range(0, num_images):
+                image_dir = os.path.join(self.images_dir, str(i))
+                os.mkdir(image_dir)
+                self.images[str(i)].save(os.path.join(image_dir, secure_filename(self.images[str(i)].filename)))
 
     @classmethod
     def get_random_image(cls, image_dir):
@@ -156,8 +168,9 @@ class ImageCreator:
 
 
 class VideoCreator:
-    def __init__(self, images_dir, tmp_dir, use_audio, audiopath, txtpath, usage_rights, output_file):
-        self.img_creator = ImageCreator(images_dir, usage_rights)
+    def __init__(self, images_dir, tmp_dir, use_audio, audiopath, txtpath, usage_rights, output_file, use_images=False, images=None):
+        self.img_creator = ImageCreator(
+            images_dir, usage_rights, use_images, images)
         self.tmp_dir = tmp_dir
         self.images_dir = images_dir
         self.use_audio = use_audio

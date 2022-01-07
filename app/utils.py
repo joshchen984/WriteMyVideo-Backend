@@ -73,13 +73,13 @@ def get_filename(length):
     return filename
 
 
-def create_video(images_dir, tmp_dir, use_audio, audiopath, textpath, usage_rights):
+def create_video(images_dir, tmp_dir, use_audio, audiopath, textpath, usage_rights, use_images=False, images=None):
     video_name = get_filename(10)
     while os.path.isfile(f"app/static/videos/{video_name}.mp4"):
         video_name = get_filename(10)
 
     creator = VideoCreator(images_dir, tmp_dir, use_audio, audiopath, textpath, usage_rights,
-                           f"app/static/videos/{video_name}.mp4")
+                           f"app/static/videos/{video_name}.mp4", use_images, images)
     try:
         creator.create_video()
     except ValueError as e:
