@@ -3,7 +3,6 @@ from flask import render_template, url_for, request, redirect, flash, abort
 import os
 from app.utils import check_for_err, create_tmp, create_video
 from werkzeug.datastructures import FileStorage
-from io import TextIOWrapper
 
 
 @app.route("/", methods=["GET"])
@@ -73,8 +72,8 @@ def upload():
                     msg = "No closing bracket for image in transcript"
                     raise ValueError(msg)
                 return render_template('upload-images.html', transcript=words, use_audio=use_audio,
-                usage_rights=usage_rights, tmp_dir=tmp_dir, images_dir=images_dir,
-                textpath=textpath,audiopath=audiopath)
+                                       usage_rights=usage_rights, tmp_dir=tmp_dir, images_dir=images_dir,
+                                       textpath=textpath, audiopath=audiopath)
             else:
                 video_name = create_video(images_dir, tmp_dir, use_audio,
                                           audiopath, textpath, usage_rights)

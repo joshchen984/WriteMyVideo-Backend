@@ -1,5 +1,125 @@
 {% extends "base.html" %} {% block head %}
 <title>Tutorial | Text2Video</title>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/tutorial.css') }}"
+  type="text/css"
+/>
 {%endblock%} {%block main %}
-<div class="main-container">Hello</div>
+<div class="main-container">
+  <div class="tutorial">
+    <h1 id="how-to-make-a-video">How To Make a Video</h1>
+    <h2 id="1-save-script-as-text-file-txt">
+      1. Save Script as Text File (.txt)
+    </h2>
+    <p>
+      In a text editor (Google Docs, Microsoft Word), write out the script you'd
+      like to use for your video narration. Insert image descriptions, in
+      brackets, into the script where you would like it to appear. Be as
+      specific as possible and double check your spelling, as the Video Creator
+      selects a top search result from Google Images. Save the script as a text
+      file (.txt)
+    </p>
+    <p>
+      In this example, the video will start with a picture of Romeo and Juliet
+      art, then an image of William Shakespeare will appear after the narration
+      says the phrase “written by”
+    </p>
+    <p style="background-color: #222; color: white; padding: 10px">
+      [romeo and juliet art] Romeo and Juliet is a play written by [William
+      Shakespeare] William Shakespeare. [Italy] It is set in Italy and is about
+      the love [family feud romeo and juliet] between two young people from
+      noble families that are enemies. It has been adapted to[romeo juliet
+      opera] opera, [romeo juliet ballet] ballet, [romeo juliet tv show]
+      television productions, and [romeo and juliet movie poster] movies.
+    </p>
+    <p>
+      Make sure there is an image description at the very start of the script,
+      or else the program won't know what image to start the video with.
+    </p>
+    <h2 id="2-upload-your-script">2. Upload Your Script</h2>
+    <p>
+      Click the Upload Script button to upload the text file from your computer
+      to the Video Creator Tool.
+    </p>
+    <h2 id="3-record-your-voice-over-or-use-a-computer-generated-voice">
+      3. Record Your Voice-over or Use a Computer-Generated Voice
+    </h2>
+    <p>
+      A computer-generated voice-over of your script will automatically be used.
+      However, if you prefer to use your own voice-over, create a recording of
+      yourself reading the script. You should read the text exactly as written,
+      without the image descriptions-we suggest copying and pasting the script
+      and deleting the image descriptions so you have a clean copy to read from.
+      Save your voice-over as an audio file (.wav or .mp3).
+    </p>
+    <h2 id="4-upload-your-voice-over">4. Upload Your Voice-over</h2>
+    <p>
+      Skip this step if you want to use a computer-generated voice for your
+      video.
+    </p>
+    <p>
+      Select the check mark that says Use your own audio file. Click the Upload
+      Audio File button to upload the audio file from your computer to the Video
+      Creator Tool.
+    </p>
+    <h2 id="5-use-your-own-images-or-use-images-from-google">
+      5. Use Your Own Images or Use Images from Google
+    </h2>
+    <p>
+      By default, the program will search for your image descriptions on Google
+      and use one of the top results as the image, but you can also upload your
+      own images to use. Follow the corresponding instructions below depending
+      on your choice.
+    </p>
+    <details>
+      <summary>
+        <h2 style="display: inline">
+          6. Instructions for Using Your Own Images
+        </h2>
+      </summary>
+      <ol>
+        <li>Check the Upload your own images option</li>
+        <li>
+          Confirm you have all the images you want to use downloaded.
+          <strong> Make sure </strong> that all the images you want to use are
+          the same size because if they aren't, the images will be stretched and
+          squeezed.
+        </li>
+        <li>Click the Create Video button.</li>
+        <li>
+          You will be redirected to a page displaying your script. Each image
+          description is in blue. Click each image description to upload an
+          image to appear at that time. Make sure all image descriptions have an
+          image uploaded for it.
+        </li>
+        <li>
+          Once all image descriptions have an image uploaded, click the Create
+          Video button.
+        </li>
+        <li>Wait to be redirected to your video</li>
+      </ol>
+    </details>
+    <details>
+      <summary>
+        <h2 style="display: inline">
+          6. Instructions for Using Images From Google
+        </h2>
+      </summary>
+      <ol>
+        <li>
+          Select the usage rights you wish to use for the images. All the images
+          used will have the selected usage rights.
+        </li>
+        <li>Click the Create Video button.</li>
+        <li>Wait to be redirected to your video</li>
+      </ol>
+    </details>
+    <h2 id="7-download-video">7. Download Video</h2>
+    <p>
+      Once you see your video, click the Download Video button to download your
+      video.
+    </p>
+  </div>
+</div>
 {%endblock%}

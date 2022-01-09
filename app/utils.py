@@ -44,7 +44,7 @@ def check_for_err(transcript, audio, use_audio):
     if transcript.filename == '':
         # checking if transcript has been uploaded
         return True, "Missing Transcript", 'warning'
-    pre, ext = os.path.splitext(transcript.filename)
+    _, ext = os.path.splitext(transcript.filename)
     if ext not in TRANSCRIPT_EXT:
         # checking if transcript has right file extension
         return True, f"Transcript cannot have a {ext} file extension", 'warning'
@@ -52,7 +52,7 @@ def check_for_err(transcript, audio, use_audio):
         if audio.filename == '':
             # checking if audio has been uploaded
             return True, "Missing Audio File", 'warning'
-        pre, ext = os.path.splitext(audio.filename)
+        _, ext = os.path.splitext(audio.filename)
         if ext not in AUDIO_EXT:
             # checking if audio has right file extension
             return True, f"Audio cannot have a {ext} file extension", 'warning'

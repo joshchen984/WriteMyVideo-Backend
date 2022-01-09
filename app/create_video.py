@@ -49,7 +49,8 @@ class ImageCreator:
             for i in range(0, num_images):
                 image_dir = os.path.join(self.images_dir, str(i))
                 os.mkdir(image_dir)
-                self.images[str(i)].save(os.path.join(image_dir, secure_filename(self.images[str(i)].filename)))
+                self.images[str(i)].save(os.path.join(
+                    image_dir, secure_filename(self.images[str(i)].filename)))
 
     @classmethod
     def get_random_image(cls, image_dir):
@@ -282,34 +283,3 @@ class VideoCreator:
         gentle_json = r.json()
         words = gentle_json['words']
         return words
-
-
-if __name__ == '__main__':
-    # Creating program arguments
-    parser = argparse.ArgumentParser(
-        description="Turn text file into Youtube video with images and audio.")
-    parser.add_argument("textpath", type=str,
-                        help="file path for the text file to convert")
-    parser.add_argument("-a", "--audiopath", type=str,
-                        help="file path for the audio file to use. If omitted the program will use google text to speech to create the audio")
-    parser.add_argument("-d", '--download', type=int, default=1)
-
-    args = parser.parse_args()
-    textpath = args.textpath
-
-    # deleting tmp directory then creating new tmp directory
-    tmp_dir = os.path.join(os.getcwd(), "tmp")
-    images_dir = os.path.join(tmp_dir, "images")
-    if args.download:
-        # DELETE THIS IF STATEMENT WHEN DEPLOYING
-        if os.path.isdir(tmp_dir):
-            shutil.rmtree(tmp_dir)
-        os.makedirs(images_dir, exist_ok=True)
-
-    if args.audiopath:
-        use_audio = True
-    else:
-        use_audio = False
-    creator = VideoCreator(images_dir, tmp_dir, use_audio, args.audiopath, textpath,
-                           os.path.join(tmp_dir, 'full_video.mp4'))
-    creator.create_video()

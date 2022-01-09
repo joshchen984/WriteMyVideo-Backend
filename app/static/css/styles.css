@@ -43,11 +43,13 @@
 
 html,
 body {
-  height: 100%;
+  min-height: 100%;
   margin: 0px;
   padding: 0;
-  background-image: url('/static/images/gradient.jpg');
-  background-size: cover;
+}
+body {
+  background: rgb(41,33,79);
+  background: linear-gradient(315deg, rgba(41,33,79,1) 50%, rgba(31,167,153,1) 100%); 
 }
 
 main {
