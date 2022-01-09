@@ -136,3 +136,32 @@ label.logo {
   margin:auto;
   width:100%;
 }
+.outlined-btn {
+  border: 2px solid black;
+  background-color: white;
+  color: black;
+  padding: 1.3rem 2.6rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+.round-btn {
+  background-color: white;
+  color: black;
+  padding: 1.3rem 2.6rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 1.5rem;
+}
+.download-btn {
+  background-color: #2eaa44;
+  color: white;
+}
+.download-btn:hover {
+  background-color: #008925;
+  color:white;
+}
+.full-video {
+  margin-bottom: 2rem;
+}

@@ -8,5 +8,5 @@
 
         Your browser does not support the video tag
 </video>
-</main>
+<a href="{{ url_for('static', filename='videos/' + video_name  + '.mp4') }}" download class="download-btn round-btn">Download Video</a>
 {%endblock%}
