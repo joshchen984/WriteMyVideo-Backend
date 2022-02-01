@@ -13,6 +13,9 @@ To start the server run this in the terminal
 
 Go to `localhost:3001` to view the website
 
+If the command above doesn't work run
+`docker-compose build --no-cache`
+
 For instructions on how to use Text2Video check out this [tutorial](https://www.youtube.com/watch?v=o5VlCaXgN6w).
 
 ## Installation

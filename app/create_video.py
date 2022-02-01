@@ -1,4 +1,3 @@
-import argparse
 from gtts import gTTS
 import os
 import shutil
@@ -9,6 +8,7 @@ import subprocess
 from PIL import Image
 import concurrent.futures
 from werkzeug.utils import secure_filename
+from mutagen.mp3 import MP3
 
 
 class ImageCreator:
@@ -110,7 +110,7 @@ class ImageCreator:
         cls.resize_img(newpath, newsize)
         return newpath
 
-    def write_frames(self, words, prev_words, tmp_dir, image_words):
+    def write_frames(self, words, prev_words, tmp_dir, image_words, audio_length):
         """Writes image paths and duration for how long images should appear for to a text file
 
         Args:
@@ -118,6 +118,7 @@ class ImageCreator:
             prev_words: Indexes of the words before the image_words
             tmp_dir: Directory to save file
             image_words: Image search terms. Only used for error message
+            audio_length: Length of audio in seconds
         """
         idx = 0
         prev_timestamp = 0
@@ -152,7 +153,7 @@ class ImageCreator:
                     break
 
             # writing last entry to txt file
-            timestamp = words[-1]['end']
+            timestamp = audio_length
             try:
                 img = self.get_random_image(
                     os.path.join(self.images_dir, str(idx)))
@@ -179,6 +180,10 @@ class VideoCreator:
         self.txtpath = txtpath
         self.output_file = output_file
 
+    def _get_audio_length(self):
+        audio = MP3(self.audiopath)
+        return audio.info.length
+
     def create_video(self):
         """Creates full video. Only function needed to call to create video
 
@@ -197,8 +202,9 @@ class VideoCreator:
 
         words = self.get_gentle_response(parsed_txt_path)
 
+        audio_length = self._get_audio_length()
         self.img_creator.write_frames(
-            words, prev_words, self.tmp_dir, image_words)
+            words, prev_words, self.tmp_dir, image_words, audio_length)
 
         # bring images together
         command = f"ffmpeg -safe 0 -y -f concat -i {os.path.join(self.tmp_dir, 'frames.txt')} {os.path.join(self.tmp_dir, 'video.mp4')}"
