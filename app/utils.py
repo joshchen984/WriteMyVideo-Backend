@@ -85,7 +85,7 @@ def create_video(images_dir, tmp_dir, use_audio, audiopath, textpath, usage_righ
         creator.create_video()
     except FailedAlignmentError:
         flash(
-            "Couldn't align the audio with the script. Please try recording the audio again.")
+            "Couldn't align the audio with the script. Please try recording the audio again.", "danger")
         return redirect(url_for("index"))
     except ValueError as e:
         flash(str(e), "warning")

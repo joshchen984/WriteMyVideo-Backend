@@ -8,6 +8,11 @@
       href="{{ url_for('static', filename='css/styles.css') }}"
       type="text/css"
     />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/alerts.css') }}"
+      type="text/css"
+    />
     {% block head %}{% endblock %}
   </head>
   <body>
@@ -20,25 +25,14 @@
     <div class="flash">
       {% with messages = get_flashed_messages(with_categories = true) %} {% if
       messages %} {%for category, message in messages %}
-      <div
-        class="alert alert-{{ category }} alert-dismissible fade show"
-        role="alert"
-      >
+      <div class="alert" role="alert">
         <span>{{message}}</span>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="alert"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <span class="closebtn">&#x2A2F;</span>
       </div>
       {%endfor%} {%endif%} {%endwith%}
     </div>
-    <main>
-      {% block main %}{%endblock%}
-    </main>
+    <main>{% block main %}{%endblock%}</main>
     {%block scripts%}{%endblock%}
+    <script src="{{ url_for('static', filename='js/alerts.js') }}"></script>
   </body>
 </html>
