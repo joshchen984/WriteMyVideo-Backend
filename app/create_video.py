@@ -1,6 +1,5 @@
 from gtts import gTTS
 import os
-import shutil
 from google_images_download import google_images_download
 import requests
 from random import choice
@@ -9,6 +8,7 @@ from PIL import Image
 import concurrent.futures
 from werkzeug.utils import secure_filename
 from mutagen.mp3 import MP3
+from app.exceptions import FailedAlignmentError
 
 
 class ImageCreator:
@@ -126,14 +126,11 @@ class ImageCreator:
         # writing frame timings to txt file
         with open(os.path.join(tmp_dir, "frames.txt"), 'w') as f:
             for i, word in enumerate(words):
-                try:
-                    timestamp = word['end']
-                except Exception as inst:
-                    print(type(inst))
-                    print(inst)
-
                 if idx + 1 < len(prev_words):
                     if i == prev_words[idx + 1]:
+                        if word['case'] == 'not-found-in-audio':
+                            raise FailedAlignmentError
+                        timestamp = word['end']
                         # choosing random image from the 5 images of search
                         try:
                             img = self.get_random_image(
@@ -206,10 +203,16 @@ class VideoCreator:
         self.img_creator.write_frames(
             words, prev_words, self.tmp_dir, image_words, audio_length)
 
-        # bring images together
+        self.combine_images()
+        self.add_audio()
+
+    def combine_images(self):
+        """Combine images into a video"""
         command = f"ffmpeg -safe 0 -y -f concat -i {os.path.join(self.tmp_dir, 'frames.txt')} {os.path.join(self.tmp_dir, 'video.mp4')}"
         subprocess.run(command, shell=True)
-        # add audio
+
+    def add_audio(self):
+        """Add audio to video"""
         command = f"ffmpeg -i {os.path.join(self.tmp_dir, 'video.mp4')} -i {self.audiopath} -c:v copy -c:a aac -y {self.output_file}"
         subprocess.run(command, shell=True)
 
@@ -282,10 +285,11 @@ class VideoCreator:
         Returns:
             list: aligned words
         """
-        files = {"transcript": open(
-            parsed_txt_path, 'rb'), 'audio': open(self.audiopath, 'rb')}
-        r = requests.post(
-            "http://gentle:8765/transcriptions?async=false", files=files)
-        gentle_json = r.json()
-        words = gentle_json['words']
-        return words
+        with open(parsed_txt_path, 'rb') as transcript:
+            with open(self.audiopath, 'rb') as audio:
+                files = {"transcript": transcript, 'audio': audio}
+                r = requests.post(
+                    "http://gentle:8765/transcriptions?async=false", files=files)
+                gentle_json = r.json()
+                words = gentle_json['words']
+                return words

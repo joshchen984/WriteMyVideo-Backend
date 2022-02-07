@@ -3,6 +3,7 @@ import string
 import random
 import shutil
 from app.create_video import VideoCreator
+from app.exceptions import FailedAlignmentError
 from flask import url_for, redirect, flash
 
 
@@ -82,6 +83,10 @@ def create_video(images_dir, tmp_dir, use_audio, audiopath, textpath, usage_righ
                            f"app/static/videos/{video_name}.mp4", use_images, images)
     try:
         creator.create_video()
+    except FailedAlignmentError:
+        flash(
+            "Couldn't align the audio with the script. Please try recording the audio again.")
+        return redirect(url_for("index"))
     except ValueError as e:
         flash(str(e), "warning")
         return redirect(url_for("index"))
