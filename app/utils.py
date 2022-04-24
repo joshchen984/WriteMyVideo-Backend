@@ -2,9 +2,9 @@ import os
 import string
 import random
 import shutil
+from flask import url_for, redirect, flash
 from app.create_video import VideoCreator
 from app.exceptions import FailedAlignmentError
-from flask import url_for, redirect, flash
 
 
 def create_tmp():
@@ -42,21 +42,21 @@ def check_for_err(transcript, audio, use_audio):
     AUDIO_EXT = [".mp3"]
 
     # checking for possible errors
-    if transcript.filename == '':
+    if transcript.filename == "":
         # checking if transcript has been uploaded
-        return True, "Missing Transcript", 'warning'
+        return True, "Missing Transcript", "warning"
     _, ext = os.path.splitext(transcript.filename)
     if ext not in TRANSCRIPT_EXT:
         # checking if transcript has right file extension
-        return True, f"Transcript cannot have a {ext} file extension", 'warning'
+        return True, f"Transcript cannot have a {ext} file extension", "warning"
     if use_audio:
-        if audio.filename == '':
+        if audio.filename == "":
             # checking if audio has been uploaded
-            return True, "Missing Audio File", 'warning'
+            return True, "Missing Audio File", "warning"
         _, ext = os.path.splitext(audio.filename)
         if ext not in AUDIO_EXT:
             # checking if audio has right file extension
-            return True, f"Audio cannot have a {ext} file extension", 'warning'
+            return True, f"Audio cannot have a {ext} file extension", "warning"
     return False, None, None
 
 
@@ -70,22 +70,43 @@ def get_filename(length):
         string: filename without an extension
     """
     chars = string.ascii_letters
-    filename = ''.join([random.choice(chars) for _ in range(length)])
+    filename = "".join([random.choice(chars) for _ in range(length)])
     return filename
 
 
-def create_video(images_dir, tmp_dir, use_audio, audiopath, textpath, usage_rights, use_images=False, images=None):
+def create_video(
+    images_dir,
+    tmp_dir,
+    use_audio,
+    audiopath,
+    textpath,
+    usage_rights,
+    use_images=False,
+    images=None,
+):
+    """Creates a video."""
     video_name = get_filename(10)
     while os.path.isfile(f"app/static/videos/{video_name}.mp4"):
         video_name = get_filename(10)
 
-    creator = VideoCreator(images_dir, tmp_dir, use_audio, audiopath, textpath, usage_rights,
-                           f"app/static/videos/{video_name}.mp4", use_images, images)
+    creator = VideoCreator(
+        images_dir,
+        tmp_dir,
+        use_audio,
+        audiopath,
+        textpath,
+        usage_rights,
+        f"app/static/videos/{video_name}.mp4",
+        use_images,
+        images,
+    )
     try:
         creator.create_video()
     except FailedAlignmentError:
         flash(
-            "Couldn't align the audio with the script. Please try recording the audio again.", "danger")
+            "Couldn't align the audio with the script. Please try recording the audio again.",
+            "danger",
+        )
         return redirect(url_for("index"))
     except ValueError as e:
         flash(str(e), "warning")
