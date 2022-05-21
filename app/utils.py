@@ -2,7 +2,6 @@ import os
 import string
 import random
 import shutil
-from flask import url_for, redirect, flash
 from app.create_video import VideoCreator
 from app.exceptions import FailedAlignmentError
 
@@ -35,7 +34,6 @@ def check_for_err(transcript, audio, use_audio):
         (tuple): tuple containing:
             is_error (bool): If code found an error
             msg (string): Error message.
-            category (string): category for msg. e.g: 'warning'
     """
     # allowed file extensions
     TRANSCRIPT_EXT = [".txt"]
@@ -44,20 +42,20 @@ def check_for_err(transcript, audio, use_audio):
     # checking for possible errors
     if transcript.filename == "":
         # checking if transcript has been uploaded
-        return True, "Missing Transcript", "warning"
+        return True, "Missing Transcript"
     _, ext = os.path.splitext(transcript.filename)
     if ext not in TRANSCRIPT_EXT:
         # checking if transcript has right file extension
-        return True, f"Transcript cannot have a {ext} file extension", "warning"
+        return True, f"Transcript cannot have a {ext} file extension"
     if use_audio:
         if audio.filename == "":
             # checking if audio has been uploaded
-            return True, "Missing Audio File", "warning"
+            return True, "Missing Audio File"
         _, ext = os.path.splitext(audio.filename)
         if ext not in AUDIO_EXT:
             # checking if audio has right file extension
-            return True, f"Audio cannot have a {ext} file extension", "warning"
-    return False, None, None
+            return True, f"Audio cannot have a {ext} file extension"
+    return False, None
 
 
 def get_filename(length):
@@ -102,15 +100,10 @@ def create_video(
     )
     try:
         creator.create_video()
-    except FailedAlignmentError:
-        flash(
-            "Couldn't align the audio with the script. Please try recording the audio again.",
-            "danger",
-        )
-        return redirect(url_for("index"))
-    except ValueError as e:
-        flash(str(e), "warning")
-        return redirect(url_for("index"))
+    except FailedAlignmentError as exc:
+        raise Exception(
+            "Couldn't align the audio with the script. Please try recording the audio again."
+        ) from exc
     finally:
         # deleting tmp directory after image has been created
         shutil.rmtree(tmp_dir)

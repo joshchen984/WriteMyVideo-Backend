@@ -1,4 +1,4 @@
-from flask import render_template, url_for, request, redirect, flash, abort
+from flask import render_template, url_for, request, redirect, abort, jsonify
 import os
 from werkzeug.datastructures import FileStorage
 from app import app
@@ -17,16 +17,17 @@ def upload():
     if request.method == "POST":
         if request.files:
             POST = request.form
-            use_audio = POST.get("use_audio")
+            use_audio: bool = POST.get("use_audio") == "true"
             usage_rights = POST.get("usage_rights")
-            use_images = POST.get("use_images")
+            use_images: bool = POST.get("use_images") == "true"
             transcript: FileStorage = request.files["transcript"]
-            audio = request.files["audio"]
-
-            is_error, error_msg, category = check_for_err(transcript, audio, use_audio)
+            if use_audio:
+                audio = request.files["audio"]
+            else:
+                audio = None
+            is_error, error_msg = check_for_err(transcript, audio, use_audio)
             if is_error:
-                flash(error_msg, category)
-                return redirect(url_for("index"))
+                return abort(400, description=error_msg)
 
             # creating tmp directory
             tmp_dir, images_dir = create_tmp()
@@ -68,8 +69,9 @@ def upload():
                                     word += char
                 # checking if there's a hanging bracket
                 if is_image:
-                    msg = "No closing bracket for image in transcript"
-                    raise ValueError(msg)
+                    return abort(
+                        400, description="No closing bracket for image in transcript"
+                    )
                 return render_template(
                     "upload-images.html",
                     transcript=words,
@@ -81,12 +83,18 @@ def upload():
                     audiopath=audiopath,
                 )
             else:
-                video_name = create_video(
-                    images_dir, tmp_dir, use_audio, audiopath, textpath, usage_rights
-                )
-                if not isinstance(video_name, str):
-                    return video_name
-                return redirect(url_for("show", video_name=video_name))
+                try:
+                    video_name = create_video(
+                        images_dir,
+                        tmp_dir,
+                        use_audio,
+                        audiopath,
+                        textpath,
+                        usage_rights,
+                    )
+                except Exception as exc:
+                    return abort(500, descripon=str(exc))
+                return video_name
 
 
 @app.route("/create-video", methods=["POST"])
@@ -132,3 +140,13 @@ def show():
 @app.route("/tutorial")
 def tutorial():
     return render_template("tutorial.html")
+
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return jsonify(error=str(e)), 500
+
+
+@app.errorhandler(400)
+def bad_request(e):
+    return jsonify(error=str(e)), 400

@@ -3,11 +3,13 @@ attrs==21.2.0
 Automat==20.2.0
 autopep8==1.6.0
 beautifulsoup4==4.10.0
+black==22.3.0
 certifi==2020.11.8
 chardet==3.0.4
-click==7.1.2
+click==8.1.2
 constantly==15.1.0
 Flask==1.1.2
+Flask-Cors==3.0.10
 gTTS==2.2.1
 gunicorn==20.1.0
 hyperlink==21.0.0
@@ -21,7 +23,9 @@ lxml==4.6.3
 MarkupSafe==1.1.1
 mccabe==0.6.1
 mutagen==1.45.1
+mypy-extensions==0.4.3
 numpy==1.21.2
+pathspec==0.9.0
 pep8==1.7.1
 Pillow==8.0.1
 platformdirs==2.4.1
@@ -33,6 +37,7 @@ selenium==3.141.0
 six==1.15.0
 soupsieve==2.2.1
 toml==0.10.2
+tomli==2.0.1
 Twisted==21.2.0
 typing-extensions==4.0.1
 urllib3==1.26.2
