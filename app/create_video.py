@@ -223,6 +223,7 @@ class VideoCreator:
 
         self.combine_images()
         self.add_audio()
+        self.convert_video()
 
     def combine_images(self):
         """Combine images into a video"""
@@ -231,7 +232,12 @@ class VideoCreator:
 
     def add_audio(self):
         """Add audio to video"""
-        command = f"ffmpeg -i {os.path.join(self.tmp_dir, 'video.mp4')} -i {self.audiopath} -c:v copy -c:a aac -y {self.output_file}"
+        command = f"ffmpeg -i {os.path.join(self.tmp_dir, 'video.mp4')} -i {self.audiopath} -c:v copy -c:a aac -y {os.path.join(self.tmp_dir, 'video_with_audio.mp4')}"
+        subprocess.run(command, shell=True)
+
+    def convert_video(self):
+        """Converts video to lbx264 encoding so video viewable on web."""
+        command = f"ffmpeg -i {os.path.join(self.tmp_dir, 'video_with_audio.mp4')} -vcodec libx264 -preset ultrafast {self.output_file}"
         subprocess.run(command, shell=True)
 
     def create_audio(self, text):
