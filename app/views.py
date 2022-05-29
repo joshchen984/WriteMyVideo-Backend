@@ -2,7 +2,7 @@ from flask import render_template, url_for, request, redirect, abort, jsonify
 import os
 from werkzeug.datastructures import FileStorage
 from app import app
-from app.utils import check_for_err, create_tmp, create_video
+from app.utils import check_for_err, create_tmp, create_video, get_tmp_paths
 
 
 @app.route("/", methods=["GET"])
@@ -30,12 +30,11 @@ def upload():
                 return abort(400, description=error_msg)
 
             # creating tmp directory
-            tmp_dir, images_dir = create_tmp()
+            tmp_name = create_tmp()
+            tmp_dir, images_dir, textpath, audiopath = get_tmp_paths(tmp_name)
 
             # saving files to tmp directory
-            textpath = os.path.join(tmp_dir, "text.txt")
             transcript.save(textpath)
-            audiopath = os.path.join(tmp_dir, "audio.mp3")
             if use_audio:
                 audio.save(audiopath)
 
@@ -51,7 +50,7 @@ def upload():
                                 word += char
                                 if char == "]":
                                     # if image word just ended
-                                    words.append([word, True, num_images])
+                                    words.append([word, True])
                                     num_images += 1
                                     word = ""
                                     is_image = False
@@ -67,21 +66,14 @@ def upload():
                                         word = ""
                                 else:
                                     word += char
+                if word != "":
+                    words.append([word, False])
                 # checking if there's a hanging bracket
                 if is_image:
                     return abort(
                         400, description="No closing bracket for image in transcript"
                     )
-                return render_template(
-                    "upload-images.html",
-                    transcript=words,
-                    use_audio=use_audio,
-                    usage_rights=usage_rights,
-                    tmp_dir=tmp_dir,
-                    images_dir=images_dir,
-                    textpath=textpath,
-                    audiopath=audiopath,
-                )
+                return {"tmp_name": tmp_name, "words": words, "num_images": num_images}
             else:
                 try:
                     video_name = create_video(
@@ -93,7 +85,7 @@ def upload():
                         usage_rights,
                     )
                 except Exception as exc:
-                    return abort(500, descripon=str(exc))
+                    return abort(500, description=str(exc))
                 return video_name
 
 
@@ -103,27 +95,23 @@ def create():
     if request.method == "POST":
         if request.files:
             POST = request.form
-            use_audio = POST.get("use_audio") != "None"
-            usage_rights = POST.get("usage_rights")
-            tmp_dir = POST.get("tmp_dir")
-            images_dir = POST.get("images_dir")
-            textpath = POST.get("textpath")
-            audiopath = POST.get("audiopath")
-            video_name = create_video(
-                images_dir,
-                tmp_dir,
-                use_audio,
-                audiopath,
-                textpath,
-                usage_rights,
-                True,
-                request.files,
-            )
-            if not isinstance(video_name, str):
-                return video_name
-            return redirect(url_for("show", video_name=video_name))
-    print("No files or method not post")
-    abort(400)
+            use_audio = POST.get("use_audio") == "true"
+            tmp_name = POST.get("tmp_name")
+            tmp_dir, images_dir, textpath, audiopath = get_tmp_paths(tmp_name)
+            try:
+                video_name = create_video(
+                    images_dir,
+                    tmp_dir,
+                    use_audio,
+                    audiopath,
+                    textpath,
+                    "any",
+                    True,
+                    request.files,
+                )
+            except Exception as exc:
+                return abort(500, description=str(exc))
+            return video_name
 
 
 @app.route("/show-video")

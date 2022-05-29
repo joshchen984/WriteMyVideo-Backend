@@ -9,8 +9,9 @@ from app.exceptions import FailedAlignmentError
 def create_tmp():
     """
     Creates tmp and images directory
+
     Returns:
-        (tuple): (tmp_dir, images_dir)
+        (str): tmp directory name
     """
     # creating tmp directory
     tmp_name = get_filename(10)
@@ -19,7 +20,22 @@ def create_tmp():
     tmp_dir = os.path.join(os.getcwd(), "tmp", tmp_name)
     images_dir = os.path.join(tmp_dir, "images")
     os.makedirs(images_dir)
-    return tmp_dir, images_dir
+    return tmp_name
+
+
+def get_tmp_paths(tmp_name: str):
+    """
+    Returns path of tmp and images directory
+
+    Returns:
+        (tuple): (tmp_dir, images_dir, textpath, audiopath)
+    """
+    tmp_dir = os.path.join(os.getcwd(), "tmp", tmp_name)
+    images_dir = os.path.join(tmp_dir, "images")
+    textpath = os.path.join(tmp_dir, "text.txt")
+    audiopath = os.path.join(tmp_dir, "audio.mp3")
+
+    return tmp_dir, images_dir, textpath, audiopath
 
 
 def check_for_err(transcript, audio, use_audio):
