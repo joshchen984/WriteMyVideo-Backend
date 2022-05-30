@@ -53,7 +53,7 @@ def check_for_err(transcript, audio, use_audio):
     """
     # allowed file extensions
     TRANSCRIPT_EXT = [".txt"]
-    AUDIO_EXT = [".mp3"]
+    AUDIO_EXT = [".mp3", ".wav"]
 
     # checking for possible errors
     if transcript.filename == "":
