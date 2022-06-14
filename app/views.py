@@ -1,5 +1,4 @@
-from flask import render_template, url_for, request, redirect, abort, jsonify
-import os
+from flask import request, abort, jsonify
 from werkzeug.datastructures import FileStorage
 from app import app
 from app.utils import check_for_err, create_tmp, create_video, get_tmp_paths
@@ -7,8 +6,7 @@ from app.utils import check_for_err, create_tmp, create_video, get_tmp_paths
 
 @app.route("/", methods=["GET"])
 def index():
-    """Home page"""
-    return render_template("index.html")
+    return "hi"
 
 
 @app.route("/upload-images", methods=["POST"])
@@ -112,22 +110,7 @@ def create():
             except Exception as exc:
                 return abort(500, description=str(exc))
             return video_name
-
-
-@app.route("/show-video")
-def show():
-    """Displays video. Video to display is based on query string"""
-    video_name = request.args.get("video_name")
-    # if query string is invalid
-    vid_location = os.path.join("app", "static", "videos", video_name + ".mp4")
-    if video_name is None or not os.path.isfile(vid_location):
-        abort(404)
-    return render_template("show-video.html", video_name=video_name)
-
-
-@app.route("/tutorial")
-def tutorial():
-    return render_template("tutorial.html")
+    return abort(400)
 
 
 @app.errorhandler(500)
