@@ -35,22 +35,31 @@ class ImageCreator:
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 for i, search in enumerate(image_words):
                     # making image directory i because there can be multiple searches that have the same name
-                    arguments = {"keywords": search, "limit": 5, "print_urls": False, "output_directory": self.images_dir,
-                                 "image_directory": str(i), 'format': 'jpg', "chromedriver": "chromedriver.exe",
-                                 'silent_mode': True}  # creating list of arguments
+                    arguments = {
+                        "keywords": search,
+                        "limit": 5,
+                        "print_urls": False,
+                        "output_directory": self.images_dir,
+                        "image_directory": str(i),
+                        "format": "jpg",
+                        "chromedriver": "chromedriver.exe",
+                        "silent_mode": True,
+                    }  # creating list of arguments
 
                     if self.usage_rights != "any":
-                        arguments['usage_rights'] = self.usage_rights
+                        arguments["usage_rights"] = self.usage_rights
                     # creating thread for image download
-                    results.append(executor.submit(
-                        response.download, arguments))
+                    results.append(executor.submit(response.download, arguments))
         else:
             num_images = len(image_words)
             for i in range(0, num_images):
                 image_dir = os.path.join(self.images_dir, str(i))
                 os.mkdir(image_dir)
-                self.images[str(i)].save(os.path.join(
-                    image_dir, secure_filename(self.images[str(i)].filename)))
+                self.images[str(i)].save(
+                    os.path.join(
+                        image_dir, secure_filename(self.images[str(i)].filename)
+                    )
+                )
 
     @classmethod
     def get_random_image(cls, image_dir):
@@ -65,7 +74,7 @@ class ImageCreator:
         return os.path.join(image_dir, choice(os.listdir(image_dir)))
 
     @classmethod
-    def convert_img(cls, image_path, new_ext='.jpg'):
+    def convert_img(cls, image_path, new_ext=".jpg"):
         """Changes image to have another file extension
 
         Args:
@@ -77,7 +86,7 @@ class ImageCreator:
         """
         pre, ext = os.path.splitext(image_path)
         im = Image.open(image_path)
-        rgb_im = im.convert('RGB')
+        rgb_im = im.convert("RGB")
         os.remove(image_path)
         rgb_im.save(pre + new_ext)
         return pre + new_ext
@@ -95,7 +104,7 @@ class ImageCreator:
         im.save(image_path)
 
     @classmethod
-    def process_img(cls, image_path, newsize=(1920, 1080), new_ext='.jpg'):
+    def process_img(cls, image_path, newsize=(1920, 1080), new_ext=".jpg"):
         """Resizes and converts image to specified file extension
 
         Args:
@@ -124,21 +133,23 @@ class ImageCreator:
         prev_timestamp = 0
         timestamp = 0
         # writing frame timings to txt file
-        with open(os.path.join(tmp_dir, "frames.txt"), 'w') as f:
+        with open(os.path.join(tmp_dir, "frames.txt"), "w") as f:
             for i, word in enumerate(words):
                 if idx + 1 < len(prev_words):
                     if i == prev_words[idx + 1]:
-                        if word['case'] == 'not-found-in-audio':
+                        if word["case"] == "not-found-in-audio":
                             raise FailedAlignmentError
-                        timestamp = word['end']
+                        timestamp = word["end"]
                         # choosing random image from the 5 images of search
                         try:
                             img = self.get_random_image(
-                                os.path.join(self.images_dir, str(idx)))
+                                os.path.join(self.images_dir, str(idx))
+                            )
                         except IndexError:
                             # if the downloader didn't download any images for certain image
                             raise ValueError(
-                                f"No images downloaded for '{image_words[idx]}'")
+                                f"No images downloaded for '{image_words[idx]}'"
+                            )
 
                         newpath = self.process_img(img)
                         f.write(f"file '{newpath}'\n")
@@ -152,12 +163,10 @@ class ImageCreator:
             # writing last entry to txt file
             timestamp = audio_length
             try:
-                img = self.get_random_image(
-                    os.path.join(self.images_dir, str(idx)))
+                img = self.get_random_image(os.path.join(self.images_dir, str(idx)))
             except IndexError:
                 # if the downloader didn't download any images for certain image
-                raise ValueError(
-                    f"No images downloaded for '{image_words[idx]}'")
+                raise ValueError(f"No images downloaded for '{image_words[idx]}'")
 
             newpath = self.process_img(img)
             f.write(f"file '{newpath}'\n")
@@ -167,9 +176,19 @@ class ImageCreator:
 
 
 class VideoCreator:
-    def __init__(self, images_dir, tmp_dir, use_audio, audiopath, txtpath, usage_rights, output_file, use_images=False, images=None):
-        self.img_creator = ImageCreator(
-            images_dir, usage_rights, use_images, images)
+    def __init__(
+        self,
+        images_dir,
+        tmp_dir,
+        use_audio,
+        audiopath,
+        txtpath,
+        usage_rights,
+        output_file,
+        use_images=False,
+        images=None,
+    ):
+        self.img_creator = ImageCreator(images_dir, usage_rights, use_images, images)
         self.tmp_dir = tmp_dir
         self.images_dir = images_dir
         self.use_audio = use_audio
@@ -182,13 +201,11 @@ class VideoCreator:
         return audio.info.length
 
     def create_video(self):
-        """Creates full video. Only function needed to call to create video
-
-        """
+        """Creates full video. Only function needed to call to create video"""
         # the image search terms and the text without the image search terms
         image_words, prev_words, text = self.parse_transcript(self.txtpath)
         parsed_txt_path = os.path.join(self.tmp_dir, "parsed.txt")
-        with open(parsed_txt_path, 'w', encoding='utf8') as f:
+        with open(parsed_txt_path, "w", encoding="utf8") as f:
             f.write(text)
 
         if not self.use_audio:
@@ -201,10 +218,12 @@ class VideoCreator:
 
         audio_length = self._get_audio_length()
         self.img_creator.write_frames(
-            words, prev_words, self.tmp_dir, image_words, audio_length)
+            words, prev_words, self.tmp_dir, image_words, audio_length
+        )
 
         self.combine_images()
         self.add_audio()
+        self.convert_video()
 
     def combine_images(self):
         """Combine images into a video"""
@@ -213,7 +232,12 @@ class VideoCreator:
 
     def add_audio(self):
         """Add audio to video"""
-        command = f"ffmpeg -i {os.path.join(self.tmp_dir, 'video.mp4')} -i {self.audiopath} -c:v copy -c:a aac -y {self.output_file}"
+        command = f"ffmpeg -i {os.path.join(self.tmp_dir, 'video.mp4')} -i {self.audiopath} -c:v copy -c:a aac -y {os.path.join(self.tmp_dir, 'video_with_audio.mp4')}"
+        subprocess.run(command, shell=True)
+
+    def convert_video(self):
+        """Converts video to lbx264 encoding so video viewable on web."""
+        command = f"ffmpeg -i {os.path.join(self.tmp_dir, 'video_with_audio.mp4')} -vcodec libx264 -preset ultrafast {self.output_file}"
         subprocess.run(command, shell=True)
 
     def create_audio(self, text):
@@ -252,11 +276,11 @@ class VideoCreator:
         # The text without the image search terms
         parsed_text = ""
         # adding to text and image_words
-        with open(transcript_path, 'r') as f:
+        with open(transcript_path, "r") as f:
             for line in f:
                 for char in line:
                     if is_image:
-                        if char == ']':
+                        if char == "]":
                             # if image word just ended
                             prev_word = get_last_word(parsed_text)
                             prev_words.append(prev_word)
@@ -265,7 +289,7 @@ class VideoCreator:
                             is_image = False
                         else:
                             image_word += char
-                    elif char == '[':
+                    elif char == "[":
                         is_image = True
                     else:
                         parsed_text += char
@@ -285,11 +309,12 @@ class VideoCreator:
         Returns:
             list: aligned words
         """
-        with open(parsed_txt_path, 'rb') as transcript:
-            with open(self.audiopath, 'rb') as audio:
-                files = {"transcript": transcript, 'audio': audio}
+        with open(parsed_txt_path, "rb") as transcript:
+            with open(self.audiopath, "rb") as audio:
+                files = {"transcript": transcript, "audio": audio}
                 r = requests.post(
-                    "http://gentle:8765/transcriptions?async=false", files=files)
+                    "http://gentle:8765/transcriptions?async=false", files=files
+                )
                 gentle_json = r.json()
-                words = gentle_json['words']
+                words = gentle_json["words"]
                 return words
