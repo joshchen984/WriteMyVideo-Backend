@@ -1,8 +1,17 @@
 from flask import request, abort, jsonify
 from werkzeug.datastructures import FileStorage
 from app import app
-from app.utils import check_for_err, create_tmp, create_video, get_tmp_paths
-
+from app.utils import (
+    check_for_err,
+    create_tmp,
+    create_video,
+    get_tmp_paths,
+    get_video_name,
+    run_task,
+)
+from app.tasks import create_video_user_images
+from app.create_video import VideoCreator
+import traceback
 
 @app.route("/", methods=["GET"])
 def index():
@@ -74,7 +83,9 @@ def upload():
                 return {"tmp_name": tmp_name, "words": words, "num_images": num_images}
             else:
                 try:
-                    video_name = create_video(
+                    video_name = get_video_name()
+                    create_video(
+                        video_name,
                         images_dir,
                         tmp_dir,
                         use_audio,
@@ -97,17 +108,32 @@ def create():
             tmp_name = POST.get("tmp_name")
             tmp_dir, images_dir, textpath, audiopath = get_tmp_paths(tmp_name)
             try:
-                video_name = create_video(
-                    images_dir,
-                    tmp_dir,
-                    use_audio,
-                    audiopath,
-                    textpath,
-                    "any",
-                    True,
-                    request.files,
+                video_name = get_video_name()
+                video_creator = VideoCreator(
+                    images_dir=images_dir,
+                    tmp_dir=tmp_dir,
+                    use_audio=use_audio,
+                    audiopath=audiopath,
+                    txtpath=textpath,
+                    usage_rights="any",
+                    output_file=f"app/static/videos/{video_name}.mp4",
+                    use_images=True,
+                )
+                video_creator.create_setup_files()
+                run_task(
+                    create_video_user_images,
+                    video_name=video_name,
+                    images_dir=images_dir,
+                    tmp_dir=tmp_dir,
+                    use_audio=use_audio,
+                    audiopath=audiopath,
+                    textpath=textpath,
+                    images=request.files,
                 )
             except Exception as exc:
+                app.logger.error(
+                    traceback.format_exc()
+                )
                 return abort(500, description=str(exc))
             return video_name
     return abort(400)

@@ -2,9 +2,11 @@ import os
 import string
 import random
 import shutil
+from typing import Callable
 from app.create_video import VideoCreator
 from app.exceptions import FailedAlignmentError
-
+from flask import current_app
+from app import app
 
 def create_tmp():
     """
@@ -88,7 +90,16 @@ def get_filename(length):
     return filename
 
 
+def get_video_name():
+    """Generates a unique video name"""
+    video_name = get_filename(10)
+    while os.path.isfile(f"app/static/videos/{video_name}.mp4"):
+        video_name = get_filename(10)
+    return video_name
+
+
 def create_video(
+    video_name,
     images_dir,
     tmp_dir,
     use_audio,
@@ -99,9 +110,6 @@ def create_video(
     images=None,
 ):
     """Creates a video."""
-    video_name = get_filename(10)
-    while os.path.isfile(f"app/static/videos/{video_name}.mp4"):
-        video_name = get_filename(10)
 
     creator = VideoCreator(
         images_dir,
@@ -115,7 +123,7 @@ def create_video(
         images,
     )
     try:
-        creator.create_video()
+        creator.create_full_video()
     except FailedAlignmentError as exc:
         raise Exception(
             "Couldn't align the audio with the script. Please try recording the audio again."
@@ -123,4 +131,15 @@ def create_video(
     finally:
         # deleting tmp directory after image has been created
         shutil.rmtree(tmp_dir)
-    return video_name
+
+
+def run_task(function: Callable, *args, **kwargs):
+    """Queue task
+
+    Args:
+        function (Callable): Function to queue
+        *args: args to pass to function
+        **kwargs: kwargs to pass to function
+    """
+    app.logger.info(f'Task named "{function.__name__}" queued')
+    current_app.task_queue.enqueue(function, *args, **kwargs)

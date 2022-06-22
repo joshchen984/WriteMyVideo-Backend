@@ -176,6 +176,8 @@ class ImageCreator:
 
 
 class VideoCreator:
+    """creates video"""
+
     def __init__(
         self,
         images_dir,
@@ -200,8 +202,13 @@ class VideoCreator:
         audio = MP3(self.audiopath)
         return audio.info.length
 
-    def create_video(self):
+    def create_full_video(self):
         """Creates full video. Only function needed to call to create video"""
+        self.create_setup_files()
+        self.create_video()
+
+    def create_setup_files(self):
+        """Create files that are used to create video"""
         # the image search terms and the text without the image search terms
         image_words, prev_words, text = self.parse_transcript(self.txtpath)
         parsed_txt_path = os.path.join(self.tmp_dir, "parsed.txt")
@@ -221,6 +228,8 @@ class VideoCreator:
             words, prev_words, self.tmp_dir, image_words, audio_length
         )
 
+    def create_video(self):
+        """Runs ffmpeg commands to create video"""
         self.combine_images()
         self.add_audio()
         self.convert_video()
