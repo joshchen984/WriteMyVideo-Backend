@@ -9,9 +9,10 @@ from app.utils import (
     get_video_name,
     run_task,
 )
-from app.tasks import create_video_user_images
+from app.tasks import create_video_user_images, create_video_no_images
 from app.create_video import VideoCreator
 import traceback
+
 
 @app.route("/", methods=["GET"])
 def index():
@@ -82,16 +83,28 @@ def upload():
                     )
                 return {"tmp_name": tmp_name, "words": words, "num_images": num_images}
             else:
+                # Create video by downloading Google images
                 try:
                     video_name = get_video_name()
-                    create_video(
-                        video_name,
-                        images_dir,
-                        tmp_dir,
-                        use_audio,
-                        audiopath,
-                        textpath,
-                        usage_rights,
+                    video_creator = VideoCreator(
+                        images_dir=images_dir,
+                        tmp_dir=tmp_dir,
+                        use_audio=use_audio,
+                        audiopath=audiopath,
+                        txtpath=textpath,
+                        usage_rights=usage_rights,
+                        output_file=f"app/static/videos/{video_name}.mp4",
+                    )
+                    video_creator.create_setup_files()
+                    run_task(
+                        create_video_no_images,
+                        video_name=video_name,
+                        images_dir=images_dir,
+                        tmp_dir=tmp_dir,
+                        use_audio=use_audio,
+                        audiopath=audiopath,
+                        textpath=textpath,
+                        usage_rights=usage_rights,
                     )
                 except Exception as exc:
                     return abort(500, description=str(exc))
@@ -118,7 +131,7 @@ def create():
                     usage_rights="any",
                     output_file=f"app/static/videos/{video_name}.mp4",
                     use_images=True,
-                    images=request.files
+                    images=request.files,
                 )
                 video_creator.create_setup_files()
                 run_task(
@@ -131,9 +144,7 @@ def create():
                     textpath=textpath,
                 )
             except Exception as exc:
-                app.logger.error(
-                    traceback.format_exc()
-                )
+                app.logger.error(traceback.format_exc())
                 return abort(500, description=str(exc))
             return video_name
     return abort(400)
