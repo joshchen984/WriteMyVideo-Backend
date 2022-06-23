@@ -36,6 +36,16 @@ Python 3.6 or up
 Docker
 [How to install](https://www.youtube.com/watch?v=5nX8U8Fz5S0)
 
+## Development
+
+- Uses [rq](https://python-rq.org/) to manage background jobs
+- Can't pass in files to background jobs
+
+## Deployment
+
+- Deployed on digitalocean
+- Domain managed by cloudflare
+
 ## Acknowledgments
 
 This was inspired by Carykh's [Youtube Video Creator](https://www.youtube.com/watch?v=Jr9sptoLvJU&t=64s).

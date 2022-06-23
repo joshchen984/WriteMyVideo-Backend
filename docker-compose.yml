@@ -11,3 +11,17 @@ services:
       - ${WEBSITE_PORT:-3001}:80
     volumes:
       - .:/app
+  redis-host:
+    image: redis:latest
+    ports:
+    - 6379:6379
+  worker:
+    build:
+      context: .
+      dockerfile: ./worker.Dockerfile
+    volumes:
+      - .:/app
+    depends_on:
+      - redis-host
+volumes:
+  .:
