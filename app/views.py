@@ -118,6 +118,7 @@ def create():
                     usage_rights="any",
                     output_file=f"app/static/videos/{video_name}.mp4",
                     use_images=True,
+                    images=request.files
                 )
                 video_creator.create_setup_files()
                 run_task(
@@ -128,7 +129,6 @@ def create():
                     use_audio=use_audio,
                     audiopath=audiopath,
                     textpath=textpath,
-                    images=request.files,
                 )
             except Exception as exc:
                 app.logger.error(

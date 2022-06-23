@@ -14,7 +14,7 @@ def create_app():
         supports_credentials=True,
     )
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev")
-    app.redis = Redis('redis://redis-host')
+    app.redis = Redis(host='redis-host', port=6379)
     app.task_queue = rq.Queue("video-tasks", connection=app.redis)
     app.logger.setLevel(logging.DEBUG)
     return app
