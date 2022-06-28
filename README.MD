@@ -4,7 +4,9 @@ The repository for the frontend is [here](https://github.com/joshchen984/WriteMy
 
 WriteMyVideo's purpose is to help people create videos quickly and easily by simply typing out the video’s script and a description of images to include in the video.
 
-![](images/demo.png)
+<kbd>
+<img src="images/demo.png">
+</kbd>
 
 ## Usage
 
