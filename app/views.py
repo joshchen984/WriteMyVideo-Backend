@@ -1,4 +1,4 @@
-from flask import request, abort, jsonify
+from flask import request, abort, jsonify, send_file
 from werkzeug.datastructures import FileStorage
 from app import app
 from app.utils import (
@@ -25,6 +25,12 @@ def video_exists(video):
     if os.path.exists(os.path.join("app", "static", "videos", f"{video}.mp4")):
         return "True"
     return "False"
+
+
+@app.route("/download/<video>", methods=["GET"])
+def get_video(video):
+    """Triggers client downloading video"""
+    return send_file(os.path.join("static", "videos", f"{video}.mp4"))
 
 
 @app.route("/upload-images", methods=["POST"])
