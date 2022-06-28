@@ -1,4 +1,4 @@
-# Contributing to Text2Video
+# Contributing to WriteMyVideo
 
 ## Contribute with Pull Requests
 
@@ -23,7 +23,7 @@ To report a bug create a Github issue.
 
 ## Production
 
-Text2Video is deployed on DigitalOcean
+WriteMyVideo is deployed on DigitalOcean
 
 - Create a `.env.production` file in the root directory containing this:
 

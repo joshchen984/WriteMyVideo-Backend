@@ -1,8 +1,10 @@
-# Text2Video
+# WriteMyVideo Backend
 
-Text2Video's purpose is to help people create videos quickly and easily by simply typing out the video’s script and a description of images to include in the video.
+The repository for the frontend is [here](https://github.com/joshchen984/WriteMyVideo-Frontend).
 
-![](images/demo.gif)
+WriteMyVideo's purpose is to help people create videos quickly and easily by simply typing out the video’s script and a description of images to include in the video.
+
+![](images/demo.png)
 
 ## Usage
 
@@ -16,15 +18,13 @@ Go to `localhost:3001` to view the website
 If the command above doesn't work run
 `docker-compose build --no-cache`
 
-For instructions on how to use Text2Video check out this [tutorial](https://www.youtube.com/watch?v=o5VlCaXgN6w).
-
 ## Installation
 
 Run these commands
 
 ```
-git clone https://github.com/joshchen984/Text2Video.git
-cd Text2Video
+git clone https://github.com/joshchen984/WriteMyVideo-Backend.git
+cd WriteMyVideo-Backend
 mkdir app/static/videos
 mkdir tmp
 ```
