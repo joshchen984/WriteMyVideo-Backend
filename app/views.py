@@ -1,9 +1,10 @@
-from flask import request, abort, jsonify, send_file
+from flask import request, abort, jsonify
 from werkzeug.datastructures import FileStorage
 from app import app
 from app.utils import (
     check_for_err,
     create_tmp,
+    create_video,
     get_tmp_paths,
     get_video_name,
     run_task,
@@ -11,26 +12,11 @@ from app.utils import (
 from app.tasks import create_video_user_images, create_video_no_images
 from app.create_video import VideoCreator
 import traceback
-import os
 
 
 @app.route("/", methods=["GET"])
 def index():
     return "hi"
-
-
-@app.route("/exists/<video>", methods=["GET"])
-def video_exists(video):
-    """Checks if video exists"""
-    if os.path.exists(os.path.join("app", "static", "videos", f"{video}.mp4")):
-        return "True"
-    return "False"
-
-
-@app.route("/download/<video>", methods=["GET"])
-def get_video(video):
-    """Triggers client downloading video"""
-    return send_file(os.path.join("static", "videos", f"{video}.mp4"))
 
 
 @app.route("/upload-images", methods=["POST"])
