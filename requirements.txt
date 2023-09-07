@@ -51,4 +51,4 @@ urllib3==1.26.2
 Werkzeug==1.0.1
 wrapt==1.13.3
 zope.interface==5.4.0
-git+https://github.com/Joeclinton1/google-images-download.git#egg=google-images-download
+git+https://github.com/janvdp/google-images-download.git#egg=google-images-download
